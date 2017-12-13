@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 
 class App extends Component {
 
@@ -38,7 +38,7 @@ class App extends Component {
         <header>
           <h1>Home Page</h1>
         </header>
-        <Home />
+      
 
         <div className="App-header">
           <h2>Welcome to React</h2>
