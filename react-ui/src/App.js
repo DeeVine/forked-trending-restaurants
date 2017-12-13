@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Home from "./pages/Home";
 
 class App extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -34,9 +34,13 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div>
+        <header>
+          <h1>Home Page</h1>
+        </header>
+        <Home />
+
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
         <p className="App-intro">
@@ -50,6 +54,7 @@ class App extends Component {
             ? 'Fetching message from API'
             : this.state.message}
         </p>
+
       </div>
     );
   }
