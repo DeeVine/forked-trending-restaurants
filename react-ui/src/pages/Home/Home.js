@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import API from "../../utils/apis.js";
+import Arrays from './arrays.json';
 
 class Home extends Component {
 
@@ -134,7 +135,6 @@ class Home extends Component {
 				state: 'CA',
 				country: 'US'
 			}
-			console.log(url, params, headers)
 			setTimeout(()=> {
 				API.APIsearch(url, params, headers)
 					.then(res => {
@@ -154,12 +154,12 @@ class Home extends Component {
 		setTimeout(() => {
 			this.yelpDetails(yelpIdArr);
 		}, 15000)
-	}
+	};
 
 	yelpDetails = (arr) => {
 		const yelpBiz = [];
 		const headers = {
-			Authorization: "Bearer Dt0X2kf0ef_hQ5Jc_5FNnxheSlXdFX1-svTZE6AJP0J4lBoVuMFRl66QgPFblxpMN-_AHN9OL3mek81qVap7DEtTMK2MrXxXpTxV31SVTbe-qajxmCEGj_nHwuEuWnYx"
+			Authorization: "Bearer XwQSC62cYjT-1Gd9r7EumiSbiOyTobUwVsMBWKI-1Ep38A0ea-vRJqg6sm_Ip_blapSeng_Z9wdkCiGYMUNn3Xq8eM3I8FUErqoxJuDp6r3xSKiDTQE2GzAbKAkuWnYx"
 		};
 		const params = {};
 		console.log(arr);
@@ -175,7 +175,7 @@ class Home extends Component {
 					yelpBizInfo.yelpId = data.id;
 					yelpBizInfo.price = data.price;
 					yelpBizInfo.rating = data.rating;
-					yelpBizInfo.reviews = data.review_count;
+					yelpBizInfo.total_reviews = {reviews: data.review_count, query_date: {$type: "date"}};
 					yelpBizInfo.categories = data.categories;
 					yelpBizInfo.phone = data.display_phone;
 					yelpBizInfo.yelpURL = data.url;
@@ -186,8 +186,30 @@ class Home extends Component {
 		setTimeout(() => {
 			console.log(yelpBiz);
 		}, 10000)
-	}
+	};
 
+
+	yelppy = () => {
+	const yelpHeader = {
+  'Authorization': 'Bearer Dt0X2kf0ef_hQ5Jc_5FNnxheSlXdFX1-svTZE6AJP0J4lBoVuMFRl66QgPFblxpMN-_AHN9OL3mek81qVap7DEtTMK2MrXxXpTxV31SVTbe-qajxmCEGj_nHwuEuWnYx'
+	};
+	const yelpTotalReviews = [];
+	console.log("****LENGTH****: ",Arrays.yelpArrIds.length);
+
+	for (var i = 0; i < 1; i++) {
+		let id = Arrays.yelpArrIds[i].yelpId;
+    let yelpURL = "https://api.yelp.com/v3/businesses/";
+    yelpURL = yelpURL + id;
+    API.APIsearch(yelpURL, undefined, yelpHeader)
+      .then(result => {
+        yelpTotalReviews.push({
+          total_reviews: result.data.review_count
+        })
+        console.log(yelpTotalReviews)
+      })
+      .catch(err => console.log(err))
+	}
+	};
 
 	render() {
 		return (
@@ -200,7 +222,7 @@ class Home extends Component {
 			>
 			button
 			</button>
-			<button onClick={this.yelpAPI}>
+			<button onClick={this.yelppy}>
 				Yelp Button
 			</button>
 			</div>
