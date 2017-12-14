@@ -1,7 +1,9 @@
 //dependencies
 const express = require('express');
+var bodyParser = require("body-parser");
 const path = require('path');
 const app = express();
+const routes = require("../routes");
 var db = require("../models");
 
 //connections
@@ -15,6 +17,9 @@ mongoose.connect(MONGODB_URI, {
 
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(routes);
 
 // Answer API requests.
 app.get('/api', function (req, res) {

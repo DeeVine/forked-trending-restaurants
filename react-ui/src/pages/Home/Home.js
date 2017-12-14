@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import API from "../../utils/apis.js";
+import API from "../../utils/apis";
 import Arrays from './arrays.json';
 
 class Home extends Component {
@@ -7,6 +7,14 @@ class Home extends Component {
 	state = {
 		restaurantArr: []
 	};
+
+	loadRestaurants = () => {
+    	API.AllReviews()
+    	.then(res =>
+    		console.log(res)
+    		)
+    	.catch(err => console.log(err));
+    };
 
 	// gets google places api data. pull name, latlng
 	getAPIData = (callback) => {
@@ -198,7 +206,7 @@ class Home extends Component {
 
 	for (var i = 0; i < 1; i++) {
 		let id = Arrays.yelpArrIds[i].yelpId;
-    let yelpURL = "https://api.yelp.com/v3/businesses/";
+    let yelpURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/";
     yelpURL = yelpURL + id;
     API.APIsearch(yelpURL, undefined, yelpHeader)
       .then(result => {
@@ -217,6 +225,10 @@ class Home extends Component {
 			<h1>
 				Home Home Home
 			</h1>
+			<button onClick={this.loadRestaurants}>
+				load restaurants
+			</button>
+
 			<button
 				onClick={() => this.getAPIData()}
 			>
