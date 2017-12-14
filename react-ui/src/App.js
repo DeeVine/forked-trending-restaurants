@@ -12,11 +12,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/api')
+    fetch('/api/restaurants')
       .then(response => {
         if (!response.ok) {
           throw new Error(`status ${response.status}`);
         }
+        console.log(response);
         return response.json();
       })
       .then(json => {
