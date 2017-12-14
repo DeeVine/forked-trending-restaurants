@@ -1,7 +1,9 @@
 //dependencies
 const express = require('express');
+var bodyParser = require("body-parser");
 const path = require('path');
 const app = express();
+const routes = require("../routes");
 var db = require("../models");
 
 //connections
@@ -15,6 +17,9 @@ mongoose.connect(MONGODB_URI, {
 
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(routes);
 
 // Answer API requests.
 app.get('/api', function (req, res) {
@@ -24,19 +29,19 @@ app.get('/api', function (req, res) {
 
 const googleInfoArr = []
 
-app.get("/restaurant", function(req, res) {
-  // Grab every document in the Articles collection
-  db.Restaurants
-    .find({})
-    .then(function(dbRestaurant) {
-      // If we were able to successfully find Articles, send them back to the client
-      res.json(dbRestaurant);
-    })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
+// app.get("/restaurant", function(req, res) {
+//   // Grab every document in the Articles collection
+//   db.Restaurants
+//     .find({})
+//     .then(function(dbRestaurant) {
+//       // If we were able to successfully find Articles, send them back to the client
+//       res.json(dbRestaurant);
+//     })
+//     .catch(function(err) {
+//       // If an error occurred, send it to the client
+//       res.json(err);
+//     });
+// });
 
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {

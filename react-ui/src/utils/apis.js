@@ -6,7 +6,10 @@ export default {
 			params: params,
 			headers: headers
 		})
-	}
+	},
 
+	AllReviews: function (){
+		return axios.get("api/restaurants");
+	}
 	
 }
