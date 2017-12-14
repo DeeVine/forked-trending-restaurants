@@ -29,19 +29,19 @@ app.get('/api', function (req, res) {
 
 const googleInfoArr = []
 
-app.get("/restaurant", function(req, res) {
-  // Grab every document in the Articles collection
-  db.Restaurants
-    .find({})
-    .then(function(dbRestaurant) {
-      // If we were able to successfully find Articles, send them back to the client
-      res.json(dbRestaurant);
-    })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
-});
+// app.get("/restaurant", function(req, res) {
+//   // Grab every document in the Articles collection
+//   db.Restaurants
+//     .find({})
+//     .then(function(dbRestaurant) {
+//       // If we were able to successfully find Articles, send them back to the client
+//       res.json(dbRestaurant);
+//     })
+//     .catch(function(err) {
+//       // If an error occurred, send it to the client
+//       res.json(err);
+//     });
+// });
 
 // // All remaining requests return the React app, so it can handle routing.
 // app.get('*', function(request, response) {
