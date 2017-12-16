@@ -72,9 +72,9 @@ yelp_restaurants = db.yelprestaurants
 # # 
 # # To insert the array of new restaurants
 for data in my_list:
-	restaurants.update_one({'yelpId': data['yelpId']},
+	yelp_restaurants.update_one({'yelpId': data['yelpId']},
 		{"$set":data}, upsert=True)
-print(restaurants.count())
+print(yelp_restaurants.count())
 # # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 # # to update rating and reviews
