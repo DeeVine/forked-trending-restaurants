@@ -10,7 +10,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 import datetime
 now = datetime.datetime.now()
-print(datetime.__version__)
+
 client = MongoClient('mongodb://admin:bootcamp123@ds125113.mlab.com:25113/trendingreviewapp')
 db = client.trendingreviewapp
 
