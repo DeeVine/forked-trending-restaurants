@@ -16,6 +16,7 @@ db = client.heroku_vg8qr96g
 
 # Updates yelpId database based on id_arrays.json
 jsondata = json.load(open('/app/bin/id_arrays.json'))
+
 yelp_ids = jsondata['yelpArrIds']
 
 yelpIds = db.yelpIds
@@ -66,7 +67,6 @@ for val in items:
 		}
 	updated_list.append(data)
 # # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 # # insert my_list into the collection
 yelp_restaurants = db.yelprestaurants
 # # 
