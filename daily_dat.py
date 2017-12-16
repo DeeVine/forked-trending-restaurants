@@ -1,14 +1,17 @@
 # Script for collecting data
 import json
+print(json.__version__)
 import requests
-
+print(requests.__version__)
 import pymongo
+print(pymongo.__version__)
 from pymongo import MongoClient
 
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
+# import pprint
+# pp = pprint.PrettyPrinter(indent=4)
 
 import datetime
+print(datetime.__version__)
 now = datetime.datetime.now()
 
 client = MongoClient('mongodb://admin:bootcamp123@ds125113.mlab.com:25113/trendingreviewapp')
@@ -26,6 +29,12 @@ yelpIds = db.yelpIds
 
 items = list(yelpIds.find())
 my_list = []
+
+# import os
+
+# cwd = os.getcwd()  # Get the current working directory (cwd)
+# files = os.listdir(cwd)  # Get all the files in that directory
+# print("Files in '%s': %s" % (cwd, files))
 
 # for looping through Ids and fresh inputting into db
 # for val in items:
@@ -66,7 +75,7 @@ updated_list = []
 # 		}
 # 	updated_list.append(data)
 # # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+# pp.pprint(updated_list)
 # # insert my_list into the collection
 restaurants = db.restaurants
 # # 
