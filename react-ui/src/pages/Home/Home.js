@@ -23,7 +23,6 @@ class Home extends Component {
 			let firstdate = date.replace(/ .*/,''); //extract date from timestamp
 			console.log('firstdate: ' + firstdate);
 			console.log('res.data.length: ' + res.data.length)
-
 			const dateArray = res.data;
 			console.log(dateArray);
 
@@ -36,7 +35,6 @@ class Home extends Component {
 
 			for (var i = 0; i < dateArray.length; i++) {
 				let querydate = dateArray[i].reviews[0].query_date;
-	
 				if (comparisonDate === querydate){
 					inner.push(dateArray[i].reviews[0].review_count); //push review count into array
 				} else {
@@ -44,33 +42,20 @@ class Home extends Component {
 					inner = [dateArray[i].reviews[0].review_count];
 				}
 				comparisonDate = querydate;
-
 				//if last array item, push inner array into sortedArray;
 				if(i === dateArray.length-1){
 					sortedArray.push(inner);
 				}
 			}
-
 			console.log(sortedArray);
-			// arrsplit = dateArray.reduce(function (acc, val) {
-		 //        var inner;
+    	})
+    	.catch(err => console.log(err));
+    };
 
-		 //        if (acc.previous !== val) {
-		 //            inner = [];
-		 //        } else {
-		 //            inner = acc.newArray.pop();
-		 //        }
-
-		 //        inner.push(val);
-		 //        acc.previous = val;
-		 //        acc.newArray.push(inner);
-
-		 //        return acc;
-		 //    }, {
-		 //        previous: null,
-		 //        newArray: []
-		 //    });
-
+    testQuery = () => {
+    	API.testQuery()
+    	.then(res => {
+			console.log(res)
     	})
     	.catch(err => console.log(err));
     };
@@ -286,6 +271,9 @@ class Home extends Component {
 			</h1>
 			<button onClick={this.loadRestaurants}>
 				load restaurants
+			</button>
+			<button onClick={this.testQuery}>
+				load test query
 			</button>
 
 			<button
