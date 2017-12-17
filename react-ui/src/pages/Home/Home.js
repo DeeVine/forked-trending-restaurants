@@ -36,19 +36,19 @@ class Home extends Component {
 
 			for (var i = 0; i < dateArray.length; i++) {
 				let querydate = dateArray[i].reviews[0].query_date;
-				console.log('querydate: ' + querydate);
-				
-
-				console.log('comparison date: ' + comparisonDate);
+	
 				if (comparisonDate === querydate){
 					inner.push(dateArray[i].reviews[0].review_count); //push review count into array
 				} else {
 					sortedArray.push(inner);
 					inner = [dateArray[i].reviews[0].review_count];
-					console.log('inner: ' + inner);
 				}
-				querydate = dateArray[i].reviews[0].query_date;
-				console.log('querydate: ' + querydate);
+				comparisonDate = querydate;
+
+				//if last array item, push inner array into sortedArray;
+				if(i === dateArray.length-1){
+					sortedArray.push(inner);
+				}
 			}
 
 			console.log(sortedArray);
