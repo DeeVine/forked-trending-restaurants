@@ -43,7 +43,7 @@ var RestaurantsSchema = new Schema({
 });
 
 // This creates our model from the above schema, using mongoose's model method
-var Restaurants = mongoose.model("restaurants", RestaurantsSchema);
+var Restaurants = mongoose.model("yelprestaurants", RestaurantsSchema);
 
 // Export the Article model
 module.exports = Restaurants;

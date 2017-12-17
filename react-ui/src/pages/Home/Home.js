@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import API from "../../utils/apis";
 import Arrays from './arrays.json';
+import moment from 'moment';
 
 class Home extends Component {
 
@@ -10,9 +11,14 @@ class Home extends Component {
 
 	loadRestaurants = () => {
     	API.AllReviews()
-    	.then(res =>
-    		console.log(res)
-    		)
+    	.then(res => {
+			// console.log(res)
+			let newArray = res;
+			console.log(newArray);
+			let date = res.data[0].reviews[0].query_date;
+			console.log(date);
+			console.log(moment(date).format('LL'));
+    	})
     	.catch(err => console.log(err));
     };
 
