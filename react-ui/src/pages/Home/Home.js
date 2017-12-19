@@ -266,25 +266,86 @@ class Home extends Component {
 	render() {
 		return (
 			<div>
-			<h1>
-				Home Home Home
-			</h1>
-			<button onClick={this.loadRestaurants}>
-				load restaurants
-			</button>
-			<button onClick={this.testQuery}>
-				load test query
-			</button>
+				<h1>
+					Home Home Home
+				</h1>
+				<button onClick={this.loadRestaurants}>
+					load restaurants
+				</button>
+				<button onClick={this.testQuery}>
+					load test query
+				</button>
 
-			<button
-				onClick={() => this.getAPIData()}
-			>
-			button
-			</button>
-			<button onClick={this.yelppy}>
-				Yelp Button
-			</button>
+				<button
+					onClick={() => this.getAPIData()}
+				>
+				button
+				</button>
+				<button onClick={this.yelppy}>
+					Yelp Button
+				</button>
+				<div className="wrapper">
+		<header>
+		  <nav className="nav level">
+		  	<div className="level-left">
+		  		<p className="logo">Trending Restaurants</p>
+		  	</div>
+		  	<div className="level-right">
+					<a href="#" className="navLinks button is-link">Find A Restaurant</a>
+					<a href="#" className="navLinks button is-link">Login</a>
+		    </div>
+		  </nav>
+		</header>
+		<div className="main container-fluid">
+			<h1>Main Content Goes Here</h1>
+			<p>The content</p>
+			<div className="card restaurant-list">
+			  <header className="card-header">
+			    <p className="card-header-title is-centered">
+			      Top Trending Restaurants
+			    </p>
+			    <a href="#" className="card-header-icon" aria-label="more options">   
+			    </a>
+			  </header>
+			  <div className="card-content">
+			    <div className="content list">
+			      <ul className='centered'>
+			      	<li>1. Restaurant 1</li>
+			      	<li>2. Restaurant 2</li>
+			      	<li>3. Restaurant 3</li>
+			      	<li>4. Restaurant 4</li>
+			      	<li>5. Restaurant 5</li>
+			      </ul>
+			    </div>
+			  </div>
 			</div>
+			<div className="card restaurant-list">
+			  <header className="card-header">
+			    <p className="card-header-title is-centered">
+			      Review Percentages
+			    </p>
+			    <a href="#" className="card-header-icon" aria-label="more options">   
+			    </a>
+			  </header>
+			  <div className="card-content">
+			    <div className="content list">
+			      <ul className='centered'>
+			      	<li>1. Restaurant 1</li>
+			      	<li>2. Restaurant 2</li>
+			      	<li>3. Restaurant 3</li>
+			      	<li>4. Restaurant 4</li>
+			      	<li>5. Restaurant 5</li>
+			      </ul>
+			    </div>
+			  </div>
+			</div>		
+		</div>
+	</div>	
+	<footer className="footer">
+		<p className="centered">Copyright &#169; 2017 | Trending Restaurants</p>
+	</footer>	
+			</div>
+
 		)
 	}
 }
