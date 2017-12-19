@@ -10,6 +10,10 @@ export default {
 
 	AllReviews: function (){
 		return axios.get("api/restaurants");
-	}
+	},
+
+	testQuery: function (){
+		return axios.get("api/restaurants/test");
+	},
 	
 }

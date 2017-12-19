@@ -7,43 +7,38 @@ var Schema = mongoose.Schema;
 // This is similar to a Sequelize model
 var RestaurantsSchema = new Schema({
   // `title` is required and of type String
-  name: {
+  yelpId: {
     type: String,
   },
-  // `link` is required and of type String
-  id: {
-    type: String,
+
+  reviews: {
+    type: Array,
   },
-  // `note` is an object that stores a Note id
-  // The ref property links the ObjectId to the Note model
-  // This allows us to populate the Article with an associated Note
+
   price: {
     type: String,
   },
 
   rating: {
-    type: String,
+    type: Number,
   },
 
-  total_reviews: {
-    type: Array,
+  yelpURL: {
+    type: String,
   },
 
   categories: {
-    type: String,
+    type: Array,
   },
 
   phone: {
     type: String,
-  },
-
-  url: {
-    type: String,
   }
+
 });
 
 // This creates our model from the above schema, using mongoose's model method
-var Restaurants = mongoose.model("restaurants", RestaurantsSchema);
+var Restaurants = mongoose.model("yelprestaurants", RestaurantsSchema);
 
 // Export the Article model
 module.exports = Restaurants;
