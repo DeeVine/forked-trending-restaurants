@@ -13,11 +13,11 @@ module.exports = {
 	},
 	testQuery: function(req, res) {
     	db.Restaurants
-			.find(req.query)
+			.find({ rating: 4 })
 			.sort({ date: -1 })
 			.then(dbModel =>{
 				res.json(dbModel)
-				// console.log(dbModel);
+				console.log(dbModel);
 			})
 			.catch(err => res.status(422).json(err));
 	}
