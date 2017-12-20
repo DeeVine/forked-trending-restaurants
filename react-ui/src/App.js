@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Home from "./pages/Home";
 
+
 class App extends Component {
 
   constructor(props) {
