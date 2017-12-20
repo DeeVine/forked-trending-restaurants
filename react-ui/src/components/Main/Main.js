@@ -105,7 +105,7 @@ class Main extends Component {
 	                name="enddate"
 	                placeholder="End Year (required)"
 	              />
-	              <Searchbtn onClick={this.getArticles3}>Search Articles</Searchbtn>
+	              <Searchbtn onClick={this.getArticles}>Search Articles</Searchbtn>
         	</Form>
        	</div>         
         <div className="wrapper">
