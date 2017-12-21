@@ -1,0 +1,13 @@
+.submit {
+	color: red;
+	float: center;
+}
+
+.submit-button-container {
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.input-fields {
+	padding: 1px 20px 10px 20px;
+}

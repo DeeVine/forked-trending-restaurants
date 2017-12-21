@@ -10,7 +10,7 @@ var db = require("../models");
 const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/trendingreviewapp";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/nyt";
 mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
