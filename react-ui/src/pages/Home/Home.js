@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import API from "../../utils/apis";
 import Arrays from './arrays.json';
 import moment from 'moment';
+import "./Home.css";
 
 class Home extends Component {
 
@@ -285,17 +286,6 @@ class Home extends Component {
 					Yelp Button
 				</button>
 				<div className="wrapper">
-		<header>
-		  <nav className="nav level">
-		  	<div className="level-left">
-		  		<p className="logo">Trending Restaurants</p>
-		  	</div>
-		  	<div className="level-right">
-					<a href="#" className="navLinks button is-link">Find A Restaurant</a>
-					<a href="#" className="navLinks button is-link">Login</a>
-		    </div>
-		  </nav>
-		</header>
 		<div className="main container-fluid">
 			<h1>Main Content Goes Here</h1>
 			<p>The content</p>
@@ -341,10 +331,7 @@ class Home extends Component {
 			</div>		
 		</div>
 	</div>	
-	<footer className="footer">
-		<p className="centered">Copyright &#169; 2017 | Trending Restaurants</p>
-	</footer>	
-			</div>
+	</div>
 
 		)
 	}

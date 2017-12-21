@@ -1,0 +1,7 @@
+.restaurant-list {
+	margin-bottom: 100px;
+	border-radius: 10px;
+}
+.list li {
+  list-style-type: none;
+}

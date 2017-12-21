@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Footer from "./components/Footer";
 
 class App extends Component {
 
@@ -35,28 +39,16 @@ class App extends Component {
 
   render() {
     return (
+      <Router>
       <div>
-        <header>
-          <h1>Home Page</h1>
-        </header>
-        <Home />
-
-        <div className="App-header">
-          <h2>Welcome to React</h2>
+      <Navbar />
+        <div className="content">
+          <Route exact path="/" component={Home} />
+          <Route exact path="/Login" component={Login} />
         </div>
-        <p className="App-intro">
-          {'This is '}
-          <a href="https://github.com/mars/heroku-cra-node">
-            {'create-react-app with a custom Node/Express server'}
-          </a><br/>
-        </p>
-        <p className="App-intro">
-          {this.state.fetching
-            ? 'Fetching message from API'
-            : this.state.message}
-        </p>
-
+        <Footer />
       </div>
+      </Router>
     );
   }
 }

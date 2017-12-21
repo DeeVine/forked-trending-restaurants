@@ -1,12 +1,10 @@
-html, body {
+html { 
   height: 100%;
-  margin: 0;
-}
-
-.wrapper {
-  display: flex;
-  flex-flow: column;
-  height: 100%;
+ }
+body {
+  min-height:100%; 
+  position:relative; 
+  padding-bottom:60px; 
 }
 
 .container-fluid {
@@ -17,38 +15,8 @@ html, body {
   text-align: center;
 }
 
-.list li {
-  list-style-type: none;
-}
-
-header {
-  margin: 0px;
-  color: white;
-}
-
 .is-centered {
   align-items: center;
-}
-
-.logo {
-  padding: 40px;
-  font-size: 28px;
-  font-style: italic;
-}
-
-.nav {
-  height: 100%;
-  background-color: #120961;
-  link-style: none;
-}
-
-.nav a {
-  margin: 20px 40px 20px 40px;
-  color: white;
-}
-
-.nav button {
-  height: 40px;
 }
 
 .card {
@@ -56,19 +24,9 @@ header {
   width: 50%;
 }
 
-.restaurant-list {
-  border-radius: 10px
-}
-
-.footer { 
-  margin
-  width: 100%;
-  padding: 20px;
-  position: relative;
-}
 
 .main {
   background-image: url("food2.jpeg");
   background-size: cover;
-  padding-bottom: 30px
+  padding-bottom: 60px
 }
