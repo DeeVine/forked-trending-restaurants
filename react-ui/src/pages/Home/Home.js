@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import API from "../../utils/API.js";
-import moment from 'moment';
 import "./Home.css";
 
 class Home extends Component {
@@ -27,8 +26,8 @@ class Home extends Component {
 			console.log(dateArray);
 
 			let comparisonDate = dateArray[0].reviews[0].query_date //date of first array item to compare against
-			// const sortedArray = [dateArray[0].reviews[0].review_count]; //create array with initial value
-			console.log(sortedArray);
+			// // const sortedArray = [dateArray[0].reviews[0].review_count]; //create array with initial value
+			// console.log(sortedArray);
 
 			const sortedArray = [];
 			var inner = [];

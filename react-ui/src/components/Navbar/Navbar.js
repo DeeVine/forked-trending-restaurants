@@ -15,7 +15,7 @@ const Navbar = () =>
       <Link to="/"><a href="#" className="navLinks button is-link">Home</a></Link>
     </p>
     <p className="level-item has-text-centered">
-      <img src={logo} className="logo_page" />
+      <img src={logo} className="logo_page" alt="logo_page"/>
     </p>
     <p className="level-item has-text-centered">
       <Link to="/Restaurant"><a href="#" className="navLinks button is-link">Find A Restaurant</a></Link>
