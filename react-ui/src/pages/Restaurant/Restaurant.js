@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import API from "../../utils/API.js";
-import "./Home.css";
+import "./Restaurant.css";
 
 //Need to pass value from input field
 
-class Home extends Component {
+class Restaurant extends Component {
 
 	state = {
 		restaurantArr: [],
@@ -81,56 +81,10 @@ class Home extends Component {
 			<button onClick={this.yelppy}>
 				Yelp Button
 			</button>
-			<div className="wrapper">
-				<div className="main container-fluid">
-					<h1>Main Content Goes Here</h1>
-					<p>The content</p>
-					<div className="card restaurant-list">
-					  <header className="card-header">
-					    <p className="card-header-title is-centered">
-					      Top Trending Restaurants
-					    </p>
-					    <a href="#" className="card-header-icon" aria-label="more options">   
-					    </a>
-					  </header>
-					  <div className="card-content">
-					    <div className="content list">
-					      <ul className='centered'>
-					      	<li>1. Restaurant 1</li>
-					      	<li>2. Restaurant 2</li>
-					      	<li>3. Restaurant 3</li>
-					      	<li>4. Restaurant 4</li>
-					      	<li>5. Restaurant 5</li>
-					      </ul>
-					    </div>
-					  </div>
-					</div>
-					<div className="card restaurant-list">
-						<header className="card-header">
-							<p className="card-header-title is-centered">
-							  Review Percentages
-							</p>
-							<a href="#" className="card-header-icon" aria-label="more options">   
-							</a>
-						</header>
-					 <div className="card-content">
-					    <div className="content list">
-					      <ul className='centered'>
-					      	<li>1. Restaurant 1</li>
-					      	<li>2. Restaurant 2</li>
-					      	<li>3. Restaurant 3</li>
-					      	<li>4. Restaurant 4</li>
-					      	<li>5. Restaurant 5</li>
-					      </ul>
-					    </div>
-					  </div>
-					</div>		
-				</div>
-			</div>	
 		</div>
 
 		)
 	}
 }
 
-export default Home;
+export default Restaurant;
