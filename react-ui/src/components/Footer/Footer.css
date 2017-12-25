@@ -1,8 +1,8 @@
 .footer {
-	position: absolute; 
+	position: fixed; 
     left: 0 ;
     right: 0; 
-    bottom:-150px; 
+    bottom: 0px; 
     height: 60px;
 	width: 100%;
 	padding: 20px 20px 50px 20px;
