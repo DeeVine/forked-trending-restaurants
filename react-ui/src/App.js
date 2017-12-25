@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Restaurant from "./pages/Restaurant";
+import findRestaurant from "./pages/findRestaurant";
 import Login from "./pages/Login";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
@@ -14,7 +14,7 @@ const App = () =>
     <Navbar />
         <Route exact path="/" component={Home} />
         <Route exact path="/Login" component={Login} />
-        <Route exact path="/Restaurant" component={Restaurant} />
+        <Route exact path="/findRestaurant" component={findRestaurant} />
         <Route exact path="/Main" component={Main} />
       <Footer />
     </div>

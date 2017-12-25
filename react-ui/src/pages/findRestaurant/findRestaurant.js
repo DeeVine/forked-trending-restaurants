@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Input, Form, Searchbtn } from "../../components/Form";
 import API from "../../utils/API.js";
-import "./Restaurant.css";
+import "./findRestaurant.css";
 
 //Need to pass value from input field
 
-class Restaurant extends Component {
+class findRestaurant extends Component {
 
 	state = {
 		restaurantArr: [],
@@ -84,4 +84,4 @@ class Restaurant extends Component {
 	}
 }
 
-export default Restaurant;
+export default findRestaurant;
