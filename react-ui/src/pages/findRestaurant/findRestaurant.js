@@ -15,7 +15,7 @@ class findRestaurant extends Component {
 	};
 
 	componentDidMount() {
-    	API.testQuery(this.state.restaurantName)
+    	API.AllReviews()
 			.then(res => {
 				this.setState({
 					restaurantInfo: res.data
