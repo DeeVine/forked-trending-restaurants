@@ -81,6 +81,7 @@ class Home extends Component {
 			<button onClick={this.yelppy}>
 				Yelp Button
 			</button>
+
 			<div className="wrapper">
 				<div className="main container-fluid">
 					<h1>Main Content Goes Here</h1>

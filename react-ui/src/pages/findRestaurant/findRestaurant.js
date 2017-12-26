@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Input, Form, Searchbtn } from "../../components/Form";
 import { Searched, Searcheditems } from "../../components/Searched";
+import Chart from "../../components/Chart";
 import API from "../../utils/API.js";
 import "./findRestaurant.css";
 
@@ -8,23 +9,97 @@ import "./findRestaurant.css";
 
 class findRestaurant extends Component {
 
-	state = {
-		restaurantArr: [],
-		restaurantName: "Homeroom",
-		restaurantInfo: {}
+	constructor () {
+		super();
+		this.state = { 
+			chartData: {
+				labels: [121215, 121216, 'something3', 'something4', 'something5'],
+				datasets: [
+					{
+						label: 'Population',
+						data: [
+						61754,
+						55613,
+						16516,
+						61561,
+						156165
+						],
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]
+					}
+				]
+			},
+			restaurantArr: [],
+			restaurantName: "Homeroom",
+			restaurantInfo: {}	
+		}
+	}
+
+	//happens before render
+	componentWillMount () {
+		// this.getChartData();
+	};
+
+	getChartData = () => {
+		this.setState({
+			chartData: {
+				labels: [121215, 121216, 'something3', 'something4', 'something5'],
+				datasets: [
+					{
+						label: 'Population',
+						data: [
+						3452,
+						55613,
+						645,
+						61561,
+						5634
+						],
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]
+					}
+				]
+			}
+		}, () => {
+			console.log(this.state);
+		})
+		// console.log(this.state);
 	};
 
 	componentDidMount() {
-    	API.AllReviews()
-			.then(res => {
-				this.setState({
-					restaurantInfo: res.data
-				})
-				console.log(res);
-				console.log(this.state);
-			})
-			.catch(err => console.log(err));
-  	}
+		// this.getChartData();
+   //  	API.AllReviews()
+			// .then(res => {
+
+			// 	let rating_count = res.data[0].rating_count;
+			// 	const ratingArray = rating_count.map(rating => {
+			// 		return rating.rating_count;
+			// 	})
+
+			// 	this.setState({
+			// 		restaurantInfo: res.data,
+			// 		ratingArray: rating_count
+			// 	})
+			// 	console.log(res);
+			// 	console.log(this.state);
+			// 	console.log(this.state.restaurantInfo[0].rating_count)
+				
+			// 	console.log(ratingArray);
+
+			// })
+			// .catch(err => console.log(err));
+  	};
 
 	loadRestaurants = () => {
     	API.AllReviews()
@@ -86,24 +161,35 @@ class findRestaurant extends Component {
               </Searchbtn>
             </form>
 
-            {this.state.restaurantInfo.length ? (
-              <Searched>
-                {this.state.restaurantInfo.map(restaurant => (
-                  <Searcheditems key={restaurant._id}>              
-					<p> Name of Restaurant: {restaurant.name} </p>
-					<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-					<p> Data Summary: 
-						<ul>
-							<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-							<li>Yelp URL: {restaurant.yelpURL} </li>
-						</ul>
-					</p>
-                  </Searcheditems>
-                ))}
-              </Searched>
-            ) : (
-              <h3>No Results to Display</h3>
-            )}
+            <button onClick={this.getChartData}>
+				Get Chart Data
+			</button>
+
+            <Chart chartData={this.state.chartData} location="San Jose" legendPosition="bottom"/>
+
+            <section className="section">
+			    <div className="container">
+			    	{this.state.restaurantInfo.length ? (
+			            <Searched>
+			                {this.state.restaurantInfo.map(restaurant => (
+			                  	<Searcheditems key={restaurant._id}>              
+									<p> Name of Restaurant: {restaurant.name} </p>
+									<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+									<p> Data Summary: 
+										<ul>
+											<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+											<li>Yelp URL: {restaurant.yelpURL} </li>
+										</ul>
+									</p>
+			                  	</Searcheditems>
+			                ))}
+			            </Searched>
+			            ) : (
+			              <h3>No Results to Display</h3>
+			        )}
+			    </div>
+			</section>
+            
 
 			<button onClick={this.loadRestaurants}>
 				load restaurants
