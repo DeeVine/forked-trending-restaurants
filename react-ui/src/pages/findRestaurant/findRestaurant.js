@@ -12,54 +12,27 @@ class findRestaurant extends Component {
 	constructor () {
 		super();
 		this.state = { 
-			chartData: {
-				labels: [121215, 121216, 'something3', 'something4', 'something5'],
-				datasets: [
-					{
-						label: 'Population',
-						data: [
-						61754,
-						55613,
-						16516,
-						61561,
-						156165
-						],
-						backgroundColor: [
-			                'rgba(255, 99, 132, 0.2)',
-			                'rgba(54, 162, 235, 0.2)',
-			                'rgba(255, 206, 86, 0.2)',
-			                'rgba(75, 192, 192, 0.2)',
-			                'rgba(153, 102, 255, 0.2)',
-			                'rgba(255, 159, 64, 0.2)'
-			            ]
-					}
-				]
-			},
+			chartData: {},
 			restaurantArr: [],
 			restaurantName: "Homeroom",
 			restaurantInfo: {}	
 		}
 	}
 
-	//happens before render
+	//happens before initial render
 	componentWillMount () {
-		// this.getChartData();
+		this.getChartData();
 	};
 
-	getChartData = () => {
+	//generate chartData for Chart component
+	getChartData = (data) => {
 		this.setState({
 			chartData: {
 				labels: [121215, 121216, 'something3', 'something4', 'something5'],
 				datasets: [
 					{
 						label: 'Population',
-						data: [
-						3452,
-						55613,
-						645,
-						61561,
-						5634
-						],
+						data: data,
 						backgroundColor: [
 			                'rgba(255, 99, 132, 0.2)',
 			                'rgba(54, 162, 235, 0.2)',
@@ -74,31 +47,44 @@ class findRestaurant extends Component {
 		}, () => {
 			console.log(this.state);
 		})
-		// console.log(this.state);
 	};
 
 	componentDidMount() {
 		// this.getChartData();
-   //  	API.AllReviews()
-			// .then(res => {
+    	API.AllReviews()
+			.then(res => {
 
-			// 	let rating_count = res.data[0].rating_count;
-			// 	const ratingArray = rating_count.map(rating => {
-			// 		return rating.rating_count;
-			// 	})
+				console.log(res.data[0].rating_count[0].query_date);
 
-			// 	this.setState({
-			// 		restaurantInfo: res.data,
-			// 		ratingArray: rating_count
-			// 	})
-			// 	console.log(res);
-			// 	console.log(this.state);
-			// 	console.log(this.state.restaurantInfo[0].rating_count)
+				let queryDate = res.data[0].rating_count[0].query_date
+				queryDate = queryDate.replace(/ .*/,'');
+				console.log(queryDate);
+				 
 				
-			// 	console.log(ratingArray);
 
-			// })
-			// .catch(err => console.log(err));
+				let rating_count = res.data[0].rating_count;
+				const ratingArray = rating_count.map(rating => {
+					return {
+						rating: rating.rating_count,
+						queryDate: rating.query_date
+					}
+				})
+
+				this.setState({
+					restaurantInfo: res.data,
+					ratingArray: rating_count
+				})
+				console.log(res);
+				console.log(this.state);
+				console.log(this.state.restaurantInfo[0].rating_count)
+				
+				console.log(ratingArray);
+
+				//generate chart data from res
+				this.getChartData(ratingArray);
+
+			})
+			.catch(err => console.log(err));
   	};
 
 	loadRestaurants = () => {
@@ -146,7 +132,22 @@ class findRestaurant extends Component {
 			<h1>
 				Find A Restaurant
 			</h1>
-			<form>
+			<form className='restaurantSearch'>
+              <Input
+                value={this.state.restaurantName}
+                onChange={this.handleInputChange}
+                name="restaurantName"
+                placeholder="restaurant"
+              />
+              <Searchbtn
+                disabled={!(this.state.restaurantName)}
+                onClick={this.handleFormSubmit}
+              >
+               Search Restaurant
+              </Searchbtn>
+            </form>
+
+            <form className="restaurantChart">
               <Input
                 value={this.state.restaurantName}
                 onChange={this.handleInputChange}
