@@ -18,6 +18,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.14.1",
     "mongoose": "^4.13.7",
+    "numjs": "^0.15.1",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "save": "^2.3.2"

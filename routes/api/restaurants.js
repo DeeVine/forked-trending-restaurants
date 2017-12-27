@@ -7,4 +7,10 @@ router.route("/")
 router.route("/:name")
 	.get(restaurantController.testQuery);
 
+router.route("/id/:id")
+	.get(restaurantController.returnDetails);
+
+router.route('/filter/:type')
+	.get(restaurantController.filterSearch);
+
 module.exports = router;

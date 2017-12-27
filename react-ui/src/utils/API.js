@@ -12,8 +12,15 @@ export default {
     return axios.get("api/restaurants");
   },
 
+  filterSearch: function(type, filter) {
+    return axios.get('api/restaurants/filter/' + type +'?filter=' + filter)
+  },
+
   testQuery: function (name) {
     return axios.get("api/restaurants/" + name);
-  }
+  },
   
+  returnDetails: function(id) {
+    return axios.get('api/restaurants/id/' + id);
+  }
 }
