@@ -3,9 +3,11 @@ import { Input, Form, Searchbtn } from "../../components/Form";
 import { Searched, Searcheditems } from "../../components/Searched";
 import API from "../../utils/API.js";
 import { Details } from "../../components/Details"
+import FilterData from "../../components/FilterData"
 import "./findRestaurant.css";
 import numjs from 'numjs';
 import {roundValue, getMean} from "../../utils/Math.js";
+
 //Need to pass value from input field
 
 class findRestaurant extends Component {
@@ -17,7 +19,8 @@ class findRestaurant extends Component {
 		restaurantDetails: false,
 		restaurantId: "",
 		filter: 'price',
-		filteredRestaurants: ''
+		filteredRestaurants: '',
+		details: false
 	};
 
 	componentDidMount() {
@@ -62,7 +65,6 @@ class findRestaurant extends Component {
 		this.setState({
 		  [name]: value
 		});
-		console.log(this.state.restaurantName);
 	};
 
 	handleFormSubmit = event => {
@@ -83,15 +85,16 @@ class findRestaurant extends Component {
 	showDetails = event => {
 		const array = []
 		const id = event.currentTarget.getAttribute('value');
-		console.log(this.state)
 		API.returnDetails(id)
 			.then(res => {
+		  	const div = document.getElementById('restaurants')
+				div.innerHTML = ''
 				this.setState({
-					restaurantDetails: res.data[0]
+					restaurantDetails: res.data[0],
+					details: true
 				})
 			})
 			.catch(err => console.log(err))
-		// console.log(this.props)
 	};
 
 	findDifference = (arr, name) => {
@@ -111,7 +114,6 @@ class findRestaurant extends Component {
 
 
 	findTotalStats = (arr) => {
-		console.log(arr)
 		var checkins = [];
 		var ratings = [];
 		var reviews = [];
@@ -138,17 +140,19 @@ class findRestaurant extends Component {
 	};
 
 	loadFilter = (ev) => {
-		if (this.state.filter === 'price') {
+		console.log(ev.target.value)
+
+		if (ev.target.value === 'price') {
 			let price = this.state.restaurantDetails.price
+			console.log(price)
 			API.filterSearch('price', price)
 				.then(res => {
 					console.log(res)
-					// this.setState({
-					// 	filteredRestaurants: res.data
-					// })
-					return
+					this.setState({
+						filteredRestaurants: res.data
+					})
 				})
-				.catch(err => console.log(err))
+				.catch(err => console.log('ERROR: ',err))
 		} else {
 			// for loop through categories and push into array with each found results
 			let categories = this.state.restaurantDetails.categories
@@ -159,23 +163,6 @@ class findRestaurant extends Component {
 	};
 
 	render() {
-		let details = null
-		if (this.state.restaurantDetails) {
-	  	const div = document.getElementById('restaurants')
-			div.innerHTML = ''
-
-			details = 
-				<Details 
-					name={this.state.restaurantDetails.name}
-					checkins={this.state.restaurantDetails.checkins}
-					checkinsAvg={this.findDifference(this.state.restaurantDetails.checkins, 'checkins')}
-					ratingCountAvg={this.findDifference(this.state.restaurantDetails.rating_count, 'rating_count')}
-					reviewsAvg={this.findDifference(this.state.restaurantDetails.reviews, 'review_count')}
-					totals={this.findTotalStats(this.state.restaurantInfo)}
-					handleInputChange={this.handleInputChange}
-					loadFilter={this.loadFilter}
-				/>
-		}
 
 		return (
 		<div>
@@ -218,7 +205,26 @@ class findRestaurant extends Component {
 	      ) : (
 	        <h3>No Results to Display</h3>
 	      )}
-	      {details}
+	      {this.state.details ? (
+					<Details 
+						name={this.state.restaurantDetails.name}
+						checkins={this.state.restaurantDetails.checkins}
+						checkinsAvg={this.findDifference(this.state.restaurantDetails.checkins, 'checkins')}
+						ratingCountAvg={this.findDifference(this.state.restaurantDetails.rating_count, 'rating_count')}
+						reviewsAvg={this.findDifference(this.state.restaurantDetails.reviews, 'review_count')}
+						totals={this.findTotalStats(this.state.restaurantInfo)}
+						handleInputChange={this.handleInputChange}
+						loadFilter={this.loadFilter}
+					/>
+					) : (
+					null
+				)}
+				{this.state.filteredRestaurants.length ? (
+					<h4> Something </h4>
+					// <FilterData />
+				) : (
+					<h4> Nothing </h4>
+				)}
 	     </div>
 
 			<button onClick={this.loadRestaurants}>

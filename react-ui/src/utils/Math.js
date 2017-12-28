@@ -1,5 +1,19 @@
 import numjs from 'numjs';
 
+var findDifference = (arr, name, days) => {
+  const values = []
+  for (var i = 0; i < arr.length; i++) {
+    values.push(arr[i][name])
+  }
+  const diff = []
+  for (var i = 0; i < values.length - 1; i++) {
+    let difference = values[i+1] - values[i]
+    diff.push(difference)
+  }
+
+  return getMean(diff)
+};
+
 var roundValue= (value, exp) => {
   let type = 'round'
   // If the exp is undefined or zero...
