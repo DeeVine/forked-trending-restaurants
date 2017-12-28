@@ -6,6 +6,9 @@ import API from "../../utils/API.js";
 import "./findRestaurant.css";
 
 //Need to pass value from input field
+//Style chart and info into one element
+//Allow to click on element to view stats
+//Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
 
 class findRestaurant extends Component {
 
@@ -59,6 +62,17 @@ class findRestaurant extends Component {
 			                'rgba(153, 102, 255, 0.2)',
 			                'rgba(255, 159, 64, 0.2)'
 			            ]
+					},{
+						label: 'rating',
+						data: [952, 970, 120],
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]	
 					}
 				]
 			}
@@ -129,21 +143,6 @@ class findRestaurant extends Component {
               </Searchbtn>
             </form>
 
-            <form className="restaurantChart">
-              <Input
-                value={this.state.restaurantName}
-                onChange={this.handleInputChange}
-                name="restaurantName"
-                placeholder="restaurant"
-              />
-              <Searchbtn
-                disabled={!(this.state.restaurantName)}
-                onClick={this.searchRestaurant}
-              >
-               Search Restaurant
-              </Searchbtn>
-            </form>
-
             <button onClick={() => this.generateChartData(this.state.restaurantInfo) }>
 				Get Chart Data
 			</button>
@@ -161,7 +160,8 @@ class findRestaurant extends Component {
 									<p> Data Summary: 
 										<ul>
 											<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-											<li>Yelp URL: {restaurant.yelpURL} </li>
+											<li>Yelp URL: <a href={restaurant.yelpURL}> {restaurant.name}</a> </li>
+											<li><img src={restaurant.yelpImg} /></li>
 										</ul>
 									</p>
 			                  	</Searcheditems>
