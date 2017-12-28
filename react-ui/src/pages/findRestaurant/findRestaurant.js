@@ -89,12 +89,45 @@ class findRestaurant extends Component {
 			.then(res => {
 		  	const div = document.getElementById('restaurants')
 				div.innerHTML = ''
+				console.log(res.data[0])
+				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
+				let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
+				let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
+				let diff = this.findDiff(res.data[0].checkins, 'checkins')
 				this.setState({
 					restaurantDetails: res.data[0],
-					details: true
+					details: true,
+					checkinsAvg: checkinsAvg,
+					reviewsAvg: reviewsAvg,
+					ratingsAvg: ratingsAvg,
+					differenceArr: diff
 				})
+				console.log(this.state)
 			})
 			.catch(err => console.log(err))
+	};
+
+	findDiff = (arr, name) => {
+		// returns an arry of obj with date and count
+		const values = []
+		for (var i = 0; i < arr.length; i++) {
+			values.push({
+				count: arr[i][name],
+				query_date: arr[i]['query_date']
+			})
+		}
+
+		const diff = []
+		for (var i = 0; i < values.length - 1; i++) {
+			let difference = values[i+1]['count'] - values[i]['count']
+			let query_date = values[i+1]['query_date']
+			diff.push({
+				difference: difference,
+				query_date: query_date
+			})
+		}		
+
+		return diff
 	};
 
 	findDifference = (arr, name) => {
@@ -148,9 +181,11 @@ class findRestaurant extends Component {
 			API.filterSearch('price', price)
 				.then(res => {
 					console.log(res)
+
 					this.setState({
 						filteredRestaurants: res.data
 					})
+					// call a function, it finds difference, then the average, inputs into obj and returns
 				})
 				.catch(err => console.log('ERROR: ',err))
 		} else {
@@ -209,9 +244,9 @@ class findRestaurant extends Component {
 					<Details 
 						name={this.state.restaurantDetails.name}
 						checkins={this.state.restaurantDetails.checkins}
-						checkinsAvg={this.findDifference(this.state.restaurantDetails.checkins, 'checkins')}
-						ratingCountAvg={this.findDifference(this.state.restaurantDetails.rating_count, 'rating_count')}
-						reviewsAvg={this.findDifference(this.state.restaurantDetails.reviews, 'review_count')}
+						checkinsAvg={this.state.checkinsAvg}
+						ratingCountAvg={this.state.ratingsAvg}
+						reviewsAvg={this.state.reviewsAvg}
 						totals={this.findTotalStats(this.state.restaurantInfo)}
 						handleInputChange={this.handleInputChange}
 						loadFilter={this.loadFilter}

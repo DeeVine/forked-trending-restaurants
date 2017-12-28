@@ -41,7 +41,7 @@ var roundValue= (value, exp) => {
 var getMean = (arr) => {
   const valArray = numjs.array(arr)
   const mean = valArray.mean()
-  return mean
+  return roundValue(mean, -2)
 }
 
 export { roundValue, getMean };
