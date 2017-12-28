@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Input, Form, Searchbtn } from "../../components/Form";
 import { Searched, Searcheditems } from "../../components/Searched";
+import Chart from "../../components/Chart";
 import API from "../../utils/API.js";
 import { Details } from "../../components/Details"
 import FilterData from "../../components/FilterData"
@@ -9,9 +10,12 @@ import numjs from 'numjs';
 import {roundValue, getMean} from "../../utils/Math.js";
 
 //Need to pass value from input field
+//Style chart and info into one element
+//Allow to click on element to view stats
+//Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
 
 class findRestaurant extends Component {
-
+  
 	state = {
 		restaurantArr: [],
 		restaurantName: "Homeroom",
@@ -26,13 +30,62 @@ class findRestaurant extends Component {
 	componentDidMount() {
     	API.AllReviews()
 			.then(res => {
+				console.log(res);
+				console.log(res.data);
 				this.setState({
 					restaurantInfo: res.data
 				})
-				console.log(res);
+				this.generateChartData(this.state.restaurantInfo);
 				console.log(this.state);
 			})
 			.catch(err => console.log(err));
+  	};
+
+  	//create labels and data arrays and sets chartData state
+	generateChartData = (res) => {
+		const rating_count = res[0].rating_count;		
+		const labels = rating_count.map(rating => {
+			let queryDate = rating.query_date.replace(/ .*/,'');
+			return queryDate;
+		})		
+		const data = rating_count.map(rating => {
+			return rating.rating_count
+		})
+
+		this.setState({
+			chartData: {
+				labels: labels,
+				datasets: [
+					{
+						label: 'rating',
+						data: data,
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]
+					},{
+						label: 'rating',
+						data: [952, 970, 120],
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]	
+					}
+				]
+			}
+		}, () => {
+			console.log(this.state);
+		})
+	}
+
   };
 
   // componentDidUpdate() {
@@ -60,6 +113,7 @@ class findRestaurant extends Component {
     	.catch(err => console.log(err));
     };
 
+    //update state whenever field input changes
     handleInputChange = event => {
 		const { name, value } = event.target;
 		this.setState({
@@ -67,7 +121,7 @@ class findRestaurant extends Component {
 		});
 	};
 
-	handleFormSubmit = event => {
+	searchRestaurant = event => {
 		event.preventDefault();
 		if (this.state.restaurantName) {
 			API.testQuery(this.state.restaurantName)
@@ -77,6 +131,7 @@ class findRestaurant extends Component {
 				})
 				console.log(res);
 				console.log(this.state);
+				this.generateChartData(this.state.restaurantInfo)
 			})
 			.catch(err => console.log(err));
 		}
@@ -169,6 +224,7 @@ class findRestaurant extends Component {
 			<h1>
 				Find A Restaurant
 			</h1>
+      
 			<form>
 	      <Input
 	        value={this.state.restaurantName}
@@ -183,6 +239,12 @@ class findRestaurant extends Component {
 	       Search Restaurant
 	      </Searchbtn>
 	    </form>
+
+      <button onClick={() => this.generateChartData(this.state.restaurantInfo) }>
+				Get Chart Data
+			</button>
+
+       <Chart chartData={this.state.chartData} restaurantName={'Set this in props'} legendPosition="top"/>
 
       <div id='restaurants'>
 	      {this.state.restaurantInfo.length ? (
