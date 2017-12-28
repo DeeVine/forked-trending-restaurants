@@ -19,13 +19,31 @@ class findRestaurant extends Component {
 		}
 	}
 
-	//happens before initial render
-	componentWillMount () {
-		// this.getChartData();
-	};
+	componentDidMount() {
+    	API.AllReviews()
+			.then(res => {
+				console.log(res);
+				console.log(res.data);
+				this.setState({
+					restaurantInfo: res.data
+				})
+				this.generateChartData(this.state.restaurantInfo);
+				console.log(this.state);
+			})
+			.catch(err => console.log(err));
+  	};
 
-	//generate chartData for Chart component
-	getChartData = (labels, data, rating_count) => {
+  	//create labels and data arrays and sets chartData state
+	generateChartData = (res) => {
+		const rating_count = res[0].rating_count;		
+		const labels = rating_count.map(rating => {
+			let queryDate = rating.query_date.replace(/ .*/,'');
+			return queryDate;
+		})		
+		const data = rating_count.map(rating => {
+			return rating.rating_count
+		})
+
 		this.setState({
 			chartData: {
 				labels: labels,
@@ -47,49 +65,7 @@ class findRestaurant extends Component {
 		}, () => {
 			console.log(this.state);
 		})
-	};
-
-	componentDidMount() {
-		// this.getChartData();
-    	API.AllReviews()
-			.then(res => {
-
-				console.log(res.data[0].rating_count[0].query_date);
-
-				let queryDate = res.data[0].rating_count[0].query_date
-				queryDate = queryDate.replace(/ .*/,'');
-				console.log(queryDate);
-				 
-				let rating_count = res.data[0].rating_count;
-				const data = rating_count.map(rating => {
-					return rating.rating_count
-				})
-
-				console.log(rating_count)
-
-				const labels = rating_count.map(rating => {
-					queryDate = rating.query_date.replace(/ .*/,'');
-					return queryDate;
-				})
-
-				console.log(labels);
-
-				this.setState({
-					restaurantInfo: res.data,
-					ratingArray: rating_count
-				})
-				console.log(res);
-				console.log(this.state);
-				console.log(this.state.restaurantInfo[0].rating_count)
-				
-				// console.log(ratingArray);
-
-				//generate chart data from res
-				this.getChartData(labels, data);
-
-			})
-			.catch(err => console.log(err));
-  	};
+	}
 
 	loadRestaurants = () => {
     	API.AllReviews()
@@ -107,6 +83,7 @@ class findRestaurant extends Component {
     	.catch(err => console.log(err));
     };
 
+    //update state whenever field input changes
     handleInputChange = event => {
 		const { name, value } = event.target;
 		this.setState({
@@ -115,7 +92,7 @@ class findRestaurant extends Component {
 		console.log(this.state.restaurantName);
 	};
 
-	handleFormSubmit = event => {
+	searchRestaurant = event => {
 		event.preventDefault();
 		if (this.state.restaurantName) {
 			API.testQuery(this.state.restaurantName)
@@ -125,6 +102,7 @@ class findRestaurant extends Component {
 				})
 				console.log(res);
 				console.log(this.state);
+				this.generateChartData(this.state.restaurantInfo)
 			})
 			.catch(err => console.log(err));
 		}
@@ -145,7 +123,7 @@ class findRestaurant extends Component {
               />
               <Searchbtn
                 disabled={!(this.state.restaurantName)}
-                onClick={this.handleFormSubmit}
+                onClick={this.searchRestaurant}
               >
                Search Restaurant
               </Searchbtn>
@@ -160,13 +138,13 @@ class findRestaurant extends Component {
               />
               <Searchbtn
                 disabled={!(this.state.restaurantName)}
-                onClick={this.handleFormSubmit}
+                onClick={this.searchRestaurant}
               >
                Search Restaurant
               </Searchbtn>
             </form>
 
-            <button onClick={this.getChartData}>
+            <button onClick={() => this.generateChartData(this.state.restaurantInfo) }>
 				Get Chart Data
 			</button>
 
