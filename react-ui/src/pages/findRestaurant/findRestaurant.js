@@ -21,17 +21,17 @@ class findRestaurant extends Component {
 
 	//happens before initial render
 	componentWillMount () {
-		this.getChartData();
+		// this.getChartData();
 	};
 
 	//generate chartData for Chart component
-	getChartData = (data) => {
+	getChartData = (labels, data, rating_count) => {
 		this.setState({
 			chartData: {
-				labels: [121215, 121216, 'something3', 'something4', 'something5'],
+				labels: labels,
 				datasets: [
 					{
-						label: 'Population',
+						label: 'rating',
 						data: data,
 						backgroundColor: [
 			                'rgba(255, 99, 132, 0.2)',
@@ -60,15 +60,19 @@ class findRestaurant extends Component {
 				queryDate = queryDate.replace(/ .*/,'');
 				console.log(queryDate);
 				 
-				
-
 				let rating_count = res.data[0].rating_count;
-				const ratingArray = rating_count.map(rating => {
-					return {
-						rating: rating.rating_count,
-						queryDate: rating.query_date
-					}
+				const data = rating_count.map(rating => {
+					return rating.rating_count
 				})
+
+				console.log(rating_count)
+
+				const labels = rating_count.map(rating => {
+					queryDate = rating.query_date.replace(/ .*/,'');
+					return queryDate;
+				})
+
+				console.log(labels);
 
 				this.setState({
 					restaurantInfo: res.data,
@@ -78,10 +82,10 @@ class findRestaurant extends Component {
 				console.log(this.state);
 				console.log(this.state.restaurantInfo[0].rating_count)
 				
-				console.log(ratingArray);
+				// console.log(ratingArray);
 
 				//generate chart data from res
-				this.getChartData(ratingArray);
+				this.getChartData(labels, data);
 
 			})
 			.catch(err => console.log(err));
@@ -166,7 +170,7 @@ class findRestaurant extends Component {
 				Get Chart Data
 			</button>
 
-            <Chart chartData={this.state.chartData} location="San Jose" legendPosition="bottom"/>
+            <Chart chartData={this.state.chartData} restaurantName={'Set this in props'} legendPosition="top"/>
 
             <section className="section">
 			    <div className="container">

@@ -12,8 +12,8 @@ class Chart extends Component {
 	static defaultProps = {
 		displayTitle: true,
 		displayLegend: true,
-		legendPosition: 'right',
-		location: 'City'
+		legendPosition: 'top',
+		restaurantName: 'restaurant name'
 	}
 
 	render() {
@@ -24,7 +24,7 @@ class Chart extends Component {
 					options={{
 						title: {
 							display: this.props.displayTitle,
-							text: 'Largest Cities In' + this.props.location,
+							text: this.props.restaurantName,
 							fontSize:25
 						},
 						legend: {
