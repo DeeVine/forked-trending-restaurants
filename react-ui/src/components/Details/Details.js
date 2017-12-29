@@ -24,7 +24,7 @@ export const Details = (props) => (
 		<h3> Total Reviews Mean</h3>
 			<p>{props.totals.reviewsMean}</p>
 		<select
-		onClick={props.loadFilter}
+		onChange={props.loadFilter}
 		>
 			<option>Filter</option>
 		  <option value="price">Price</option>

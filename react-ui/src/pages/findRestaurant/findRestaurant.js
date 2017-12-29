@@ -140,6 +140,7 @@ class findRestaurant extends Component {
 				let diff = this.findDiff(res.data[0].checkins, 'checkins');
 				let ratingDiff = this.findDiff(res.data[0].rating_count, 'rating_count');
 				let reviewDiff = this.findDiff(res.data[0].reviews, 'review_count');
+				let totalAvg = this.findTotalStats(this.state.restaurantInfo)
 
 				this.setState({
 					restaurantDetails: res.data[0],
@@ -149,7 +150,8 @@ class findRestaurant extends Component {
 					ratingsAvg: ratingsAvg,
 					diffArr: diff,
 					ratingDiff: ratingDiff,
-					reviewDiff: reviewDiff
+					reviewDiff: reviewDiff,
+					totalAvg: totalAvg
 				})
 				console.log(this.state)
 			})
@@ -308,7 +310,7 @@ class findRestaurant extends Component {
 						checkinsAvg={this.state.checkinsAvg}
 						ratingCountAvg={this.state.ratingsAvg}
 						reviewsAvg={this.state.reviewsAvg}
-						totals={this.findTotalStats(this.state.restaurantInfo)}
+						totals={this.state.totalAvg}
 						handleInputChange={this.handleInputChange}
 						loadFilter={this.loadFilter}
 					/>
