@@ -35,7 +35,7 @@ class findRestaurant extends Component {
 				this.setState({
 					restaurantInfo: res.data
 				})
-				this.generateChartData(this.state.restaurantInfo);
+				// this.generateChartData(this.state.restaurantInfo);
 				console.log(this.state);
 			})
 			.catch(err => console.log(err));
@@ -43,13 +43,13 @@ class findRestaurant extends Component {
 
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
-		const rating_count = res[0].rating_count;		
-		const labels = rating_count.map(rating => {
-			let queryDate = rating.query_date.replace(/ .*/,'');
+		// const differenceArr = res[0].rating_count;		
+		const labels = res.map(checkins => {
+			let queryDate = checkins.query_date.replace(/ .*/,'');
 			return queryDate;
 		})		
-		const data = rating_count.map(rating => {
-			return rating.rating_count
+		const data = res.map(checkins => {
+			return checkins.difference
 		})
 
 		this.setState({
@@ -57,7 +57,7 @@ class findRestaurant extends Component {
 				labels: labels,
 				datasets: [
 					{
-						label: 'rating',
+						label: 'Difference',
 						data: data,
 						backgroundColor: [
 			                'rgba(255, 99, 132, 0.2)',
@@ -67,35 +67,24 @@ class findRestaurant extends Component {
 			                'rgba(153, 102, 255, 0.2)',
 			                'rgba(255, 159, 64, 0.2)'
 			            ]
-					},{
-						label: 'rating',
-						data: [952, 970, 120],
-						backgroundColor: [
-			                'rgba(255, 99, 132, 0.2)',
-			                'rgba(54, 162, 235, 0.2)',
-			                'rgba(255, 206, 86, 0.2)',
-			                'rgba(75, 192, 192, 0.2)',
-			                'rgba(153, 102, 255, 0.2)',
-			                'rgba(255, 159, 64, 0.2)'
-			            ]	
 					}
+					// ,{
+					// 	label: 'rating',
+					// 	data: [952, 970, 120],
+					// 	backgroundColor: [
+			  //               'rgba(54, 162, 235, 0.2)',
+			  //               'rgba(255, 206, 86, 0.2)',
+			  //               'rgba(75, 192, 192, 0.2)',
+			  //               'rgba(153, 102, 255, 0.2)',
+			  //               'rgba(255, 159, 64, 0.2)'
+			  //           ]	
+					// }
 				]
 			}
 		}, () => {
 			console.log(this.state);
 		})
-	}
-
-  };
-
-  // componentDidUpdate() {
-  // 	const div = document.getElementById('restaurants')
-  // 	if (this.state.restaurantDetails) {
-  // 		console.log(this.state.restaurantDetails)
-  // 		div.innerHTML= ''
-  // 	}
-  // 	return true
-  // };
+	};
 
 	loadRestaurants = () => {
     	API.AllReviews()
@@ -131,7 +120,7 @@ class findRestaurant extends Component {
 				})
 				console.log(res);
 				console.log(this.state);
-				this.generateChartData(this.state.restaurantInfo)
+				// this.generateChartData(this.state.restaurantInfo)
 			})
 			.catch(err => console.log(err));
 		}
@@ -275,7 +264,7 @@ class findRestaurant extends Component {
 	      </Searchbtn>
 	    </form>
 
-      <button onClick={() => this.generateChartData(this.state.restaurantInfo) }>
+      <button onClick={() => this.generateChartData(this.state.differenceArr) }>
 				Get Chart Data
 			</button>
 
