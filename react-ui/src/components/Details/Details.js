@@ -26,7 +26,7 @@ export const Details = (props) => (
 		<select
 		onChange={props.loadFilter}
 		>
-			<option>Filter</option>
+			<option value="all">All</option>
 		  <option value="price">Price</option>
 		  <option value="category">Category</option>
 		</select>

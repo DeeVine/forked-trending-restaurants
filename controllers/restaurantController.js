@@ -35,15 +35,31 @@ module.exports = {
 	},
 
 	filterSearch: function(req, res) {
-		db.Restaurants
-			.find({
-				[req.params.type]: req.query.filter
-			})
-			.then(dbModel => {
-				res.json(dbModel)
-				console.log(res)
-			})
-			.catch(err => res.status(422).json(err));
+		if (req.params.type === 'price') {
+			db.Restaurants
+				.find({
+					[req.params.type]: req.query.filter
+				})
+				.then(dbModel => {
+					res.json(dbModel)
+					console.log(res)
+				})
+				.catch(err => res.status(422).json(err));
+		} else if (req.params.type === 'category') {
+			console.log(req.query.filter)
+			let animal = req.query.filter
+			db.Restaurants
+				.find({
+					categories: {
+						$elemMatch: {title: animal}
+					}
+				})
+				.then(dbModel => {
+					res.json(dbModel)
+				})
+				.catch(err => res.status(422).json(err));
+		}
+
 	}
 
 // find by filter

@@ -134,6 +134,7 @@ class findRestaurant extends Component {
 		  	const div = document.getElementById('restaurants')
 				div.innerHTML = ''
 				console.log(res.data[0])
+
 				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
 				let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
 				let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
@@ -234,23 +235,50 @@ class findRestaurant extends Component {
 			API.filterSearch('price', price)
 				.then(res => {
 					console.log(res)
-// when filter runs, it pulls new list of restaurants
-// does math to find total avg for new list
-					console.log(this.findTotalStats(res.data))
 
+					let obj = this.findTotalStats(res.data)
 					this.setState({
-						filteredRestaurants: res.data
+						totalAvg: obj
 					})
+					console.log(this.state)
 					// call a function, it finds difference, then the average, inputs into obj and returns
 				})
 				.catch(err => console.log('ERROR: ',err))
+		} else if (ev.target.value === 'all') {
+			let obj = this.findTotalStats(this.state.restaurantInfo)
+			this.setState({
+				totalAvg: obj
+			})
 		} else {
 			// for loop through categories and push into array with each found results
 			let categories = this.state.restaurantDetails.categories
-			// API.filterSearch(categories)
-			// 	.then(res => console.log(res))
-			// 	.catch(err => console.log(err))
+			let arrFirms = []
+		
+			categories.forEach(item => {
+
+				API.filterSearch('category', item.title)
+				.then(res => {
+						console.log(res.data)
+						res.data.forEach(item => {
+							var index = arrFirms.findIndex(x => x.name === item.name)
+
+							if (index === -1) {
+								arrFirms.push(item)
+							}	else {
+								console.log('no push')
+							}
+						})
+
+						let obj = this.findTotalStats(arrFirms)
+						this.setState({
+							totalAvg: obj
+						})
+				})
+				.catch(err => console.log(err))
+			})
+
 		}
+
 	};
 
 	render() {
