@@ -232,6 +232,9 @@ class findRestaurant extends Component {
 			API.filterSearch('price', price)
 				.then(res => {
 					console.log(res)
+// when filter runs, it pulls new list of restaurants
+// does math to find total avg for new list
+					console.log(this.findTotalStats(res.data))
 
 					this.setState({
 						filteredRestaurants: res.data
@@ -271,7 +274,7 @@ class findRestaurant extends Component {
 	      </Searchbtn>
 	    </form>
 
-      <button onClick={() => this.generateChartData(this.state.differenceArr) }>
+      <button onClick={() => this.generateChartData(this.state.diffArr) }>
 				Get Chart Data
 			</button>
 
