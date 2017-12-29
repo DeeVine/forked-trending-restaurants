@@ -7,7 +7,7 @@ import { Details } from "../../components/Details"
 import FilterData from "../../components/FilterData"
 import "./findRestaurant.css";
 import numjs from 'numjs';
-import {roundValue, getMean} from "../../utils/Math.js";
+import Mathy from "../../utils/Mathy.js";
 
 //Need to pass value from input field
 //Style chart and info into one element
@@ -84,9 +84,7 @@ class findRestaurant extends Component {
 		}, () => {
 			console.log(this.state);
 		})
-	}
-
-  };
+	};
 
   // componentDidUpdate() {
   // 	const div = document.getElementById('restaurants')
@@ -148,14 +146,19 @@ class findRestaurant extends Component {
 				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
 				let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
 				let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
-				let diff = this.findDiff(res.data[0].checkins, 'checkins')
+				let diff = this.findDiff(res.data[0].checkins, 'checkins');
+				let ratingDiff = this.findDiff(res.data[0].rating_count, 'rating_count');
+				let reviewDiff = this.findDiff(res.data[0].reviews, 'review_count');
+
 				this.setState({
 					restaurantDetails: res.data[0],
 					details: true,
 					checkinsAvg: checkinsAvg,
 					reviewsAvg: reviewsAvg,
 					ratingsAvg: ratingsAvg,
-					differenceArr: diff
+					diffArr: diff,
+					ratingDiff: ratingDiff,
+					reviewDiff: reviewDiff
 				})
 				console.log(this.state)
 			})
@@ -175,9 +178,11 @@ class findRestaurant extends Component {
 		const diff = []
 		for (var i = 0; i < values.length - 1; i++) {
 			let difference = values[i+1]['count'] - values[i]['count']
+			let percentChange = Mathy.roundValue(difference / values[i]['count'])
 			let query_date = values[i+1]['query_date']
 			diff.push({
 				difference: difference,
+				percentChange: percentChange,
 				query_date: query_date
 			})
 		}		
@@ -195,8 +200,8 @@ class findRestaurant extends Component {
 			let difference = values[i+1] - values[i]
 			diff.push(difference)
 		}
-
-		return getMean(diff)
+		let mean = Mathy.getMean(diff)
+		return Mathy.roundValue(mean)
 	};
 
 
@@ -216,9 +221,9 @@ class findRestaurant extends Component {
 		ratings = numjs.array(ratings);
 		reviews = numjs.array(reviews);
 
-		const checkinsMean = roundValue(checkins.mean(), -2)
-		const ratingsMean = roundValue(ratings.mean(), -2)
-		const reviewsMean = roundValue(reviews.mean(), -2)
+		const checkinsMean = Mathy.roundValue(checkins.mean(), -2)
+		const ratingsMean = Mathy.roundValue(ratings.mean(), -2)
+		const reviewsMean = Mathy.roundValue(reviews.mean(), -2)
 
 		obj.checkinsMean = checkinsMean
 		obj.ratingsMean = ratingsMean
