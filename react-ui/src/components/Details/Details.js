@@ -1,7 +1,7 @@
 import React from 'react';
 let count = 0
 export const Details = (props) => (
-	<div>
+	<div className="details">
 		<h3>
 		{props.name}
 		</h3>
