@@ -271,7 +271,7 @@ class findRestaurant extends Component {
 	      </Searchbtn>
 	    </form>
 
-      <button onClick={() => this.generateChartData(this.state.differenceArr) }>
+      <button onClick={() => this.generateChartData(this.state.diffArr) }>
 				Get Chart Data
 			</button>
 
