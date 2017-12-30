@@ -24,7 +24,8 @@ class findRestaurant extends Component {
 		restaurantId: "",
 		filter: 'price',
 		filteredRestaurants: '',
-		details: false
+		details: false,
+		arrayObject: [{someKey: "someKey1"}]
 	};
 
 	componentDidMount() {
@@ -39,6 +40,14 @@ class findRestaurant extends Component {
 				console.log(this.state);
 			})
 			.catch(err => console.log(err));
+  	};
+
+  	addArrayObj = (newObject) => {
+  		this.setState({
+  			arrayObject: this.state.arrayObject.concat([newObject])
+  		}, () => {
+  			console.log(this.state)
+  		})		
   	};
 
   	//create labels and data arrays and sets chartData state
@@ -304,11 +313,43 @@ class findRestaurant extends Component {
 	      </Searchbtn>
 	    </form>
 
-      <button onClick={() => this.generateChartData(this.state.diffArr) }>
-				Get Chart Data
-			</button>
+      	<button onClick={() => this.generateChartData(this.state.diffArr) }>
+			Get Chart Data
+		</button>
 
-       <Chart chartData={this.state.chartData} restaurantName={'Set this in props'} legendPosition="top"/>
+		<button onClick={() => this.addArrayObj({nextObjectkey: "testing2"}) }>
+			Add Array Object
+		</button>
+
+      	<div className="data-section columns">
+      		<div className="column is-three-quarters">
+	      		<Chart className='line-chart' chartData={this.state.chartData} restaurantName={this.state.restaurantDetails.name} legendPosition="top"/>
+	      	</div>
+	      	<div className="column auto">
+	      		<div className="data-navigation">
+					{this.state.details ? (
+							<Details 
+								name={this.state.restaurantDetails.name}
+								checkins={this.state.restaurantDetails.checkins}
+								checkinsAvg={this.state.checkinsAvg}
+								ratingCountAvg={this.state.ratingsAvg}
+								reviewsAvg={this.state.reviewsAvg}
+								totals={this.state.totalAvg}
+								handleInputChange={this.handleInputChange}
+								loadFilter={this.loadFilter}
+							/>
+							) : (
+							null
+						)}
+						{this.state.filteredRestaurants.length ? (
+							<h4> Something </h4>
+							// <FilterData />
+						) : (
+							<h4> Nothing </h4>
+						)}
+				</div>
+			</div>	
+	    </div>
 
       <div id='restaurants'>
 	      {this.state.restaurantInfo.length ? (
@@ -331,27 +372,7 @@ class findRestaurant extends Component {
 	      ) : (
 	        <h3>No Results to Display</h3>
 	      )}
-	      {this.state.details ? (
-					<Details 
-						name={this.state.restaurantDetails.name}
-						checkins={this.state.restaurantDetails.checkins}
-						checkinsAvg={this.state.checkinsAvg}
-						ratingCountAvg={this.state.ratingsAvg}
-						reviewsAvg={this.state.reviewsAvg}
-						totals={this.state.totalAvg}
-						handleInputChange={this.handleInputChange}
-						loadFilter={this.loadFilter}
-					/>
-					) : (
-					null
-				)}
-				{this.state.filteredRestaurants.length ? (
-					<h4> Something </h4>
-					// <FilterData />
-				) : (
-					<h4> Nothing </h4>
-				)}
-	     </div>
+	    </div>
 
 			<button onClick={this.loadRestaurants}>
 				load restaurants

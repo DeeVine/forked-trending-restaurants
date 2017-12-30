@@ -1,3 +1,8 @@
 #restaurants {
 	margin-bottom: 60px
 }
+
+.data-section {
+	border: solid black 2px;
+	margin: 20px 20px 100px 20px;
+}
