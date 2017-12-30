@@ -54,34 +54,27 @@ class findRestaurant extends Component {
 			.catch(err => console.log(err));
   	};
 
-  	//testing addding additional objects to arrays in state
-  	addArrayObj = (newObject) => {
-  		this.setState({
-  			arrayObject: this.state.arrayObject.concat([newObject])
-  		}, () => {
-  			console.log(this.state)
-  		})		
-  	};
-
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
 		// const differenceArr = res[0].rating_count;		
-		const labels = res.map(checkins => {
+		let labels = res.map(checkins => {
 			let queryDate = checkins.query_date.replace(/ .*/,'');
 			return queryDate;
-		})		
+		})
+		//check if current data set is bigger, otherwise leave label state unchanged
+		if(labels.length <= this.state.chartData.labels.length) {
+			labels = this.state.chartData.labels;
+		}
 		const data = res.map(checkins => {
 			return checkins.difference
 		})
-
-		//generate random color for new line
+		//generate random color for new dataset
 		const dynamicColors = function() {
             var r = Math.floor(Math.random() * 255);
             var g = Math.floor(Math.random() * 255);
             var b = Math.floor(Math.random() * 255);
             return "rgba(" + r + "," + g + "," + b + ", 0.2)";
-         };
-
+        };
 		this.setState({
 			chartData: {
 				labels: labels,
@@ -167,6 +160,9 @@ class findRestaurant extends Component {
 					totalAvg: totalAvg
 				})
 				console.log(this.state)
+				this.generateChartData(this.state.diffArr)
+
+
 			})
 			.catch(err => console.log(err))
 	};
@@ -295,96 +291,100 @@ class findRestaurant extends Component {
 
 		return (
 		<div>
-			<h1>
-				Find A Restaurant
-			</h1>
-      
-			<form>
-	      <Input
-	        value={this.state.restaurantName}
-	        onChange={this.handleInputChange}
-	        name="restaurantName"
-	        placeholder="restaurant"
-	      />
-	      <Searchbtn
-	        disabled={!(this.state.restaurantName)}
-	        onClick={this.handleFormSubmit}
-	      >
-	       Search Restaurant
-	      </Searchbtn>
-	    </form>
+			<div className="wrapper">
+				<div className="main container-fluid">
+					<h1>
+						Find A Restaurant
+					</h1>
+		      
+					<form>
+			      <Input
+			        value={this.state.restaurantName}
+			        onChange={this.handleInputChange}
+			        name="restaurantName"
+			        placeholder="restaurant"
+			      />
+			      <Searchbtn
+			        disabled={!(this.state.restaurantName)}
+			        onClick={this.handleFormSubmit}
+			      >
+			       Search Restaurant
+			      </Searchbtn>
+			    </form>
 
-      	<button onClick={() => this.generateChartData(this.state.diffArr) }>
-			Get Chart Data
-		</button>
+		      	{/*<button onClick={() => this.generateChartData(this.state.diffArr) }>
+					Get Chart Data
+				</button>
 
-		<button onClick={() => this.addArrayObj({nextObjectkey: "testing2"}) }>
-			Add Array Object
-		</button>
+				<button onClick={() => this.addArrayObj({nextObjectkey: "testing2"}) }>
+					Add Array Object
+				</button>*/}
 
-      	<div className="data-section columns">
-      		<div className="column is-three-quarters">
-	      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
-	      	</div>
-	      	<div className="column auto">
-	      		<div className="data-navigation">
-					{this.state.details ? (
-							<Details 
-								name={this.state.restaurantDetails.name}
-								checkins={this.state.restaurantDetails.checkins}
-								checkinsAvg={this.state.checkinsAvg}
-								ratingCountAvg={this.state.ratingsAvg}
-								reviewsAvg={this.state.reviewsAvg}
-								totals={this.state.totalAvg}
-								handleInputChange={this.handleInputChange}
-								loadFilter={this.loadFilter}
-							/>
-							) : (
-							null
-						)}
-						{this.state.filteredRestaurants.length ? (
-							<h4> Something </h4>
-							// <FilterData />
+		      	<div className="data-section columns">
+		      		<div className="column is-three-quarters">
+			      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
+			      	</div>
+			      	<div className="column auto">
+			      		<div className="data-navigation">
+							{this.state.details ? (
+									<Details 
+										name={this.state.restaurantDetails.name}
+										checkins={this.state.restaurantDetails.checkins}
+										checkinsAvg={this.state.checkinsAvg}
+										ratingCountAvg={this.state.ratingsAvg}
+										reviewsAvg={this.state.reviewsAvg}
+										totals={this.state.totalAvg}
+										handleInputChange={this.handleInputChange}
+										loadFilter={this.loadFilter}
+									/>
+									) : (
+									null
+								)}
+								{this.state.filteredRestaurants.length ? (
+									<h4> Something </h4>
+									// <FilterData />
+								) : (
+									<h4> Nothing </h4>
+								)}
+						</div>
+					</div>	
+			    </div>
+
+		      	<div id='restaurants'>
+			      	{this.state.restaurantInfo.length ? (
+			        	<Searched>
+			          	{this.state.restaurantInfo.map(restaurant => (
+				            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+				            	value={restaurant._id}
+				            >              
+											<p> Name of Restaurant: {restaurant.name} </p>
+											<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+											<p> Data Summary: 
+												<ul>
+													<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+													<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+												</ul>
+											</p>
+				            </Searcheditems>
+				          	))}
+			       		</Searched>
 						) : (
-							<h4> Nothing </h4>
+						<h3>No Results to Display</h3>
 						)}
+			    </div>
+
+					<button onClick={this.loadRestaurants}>
+						load restaurants
+					</button>
+
+					<button onClick={() => this.getAPIData()}>
+						button
+					</button>
+					<button onClick={this.yelppy}>
+						Yelp Button
+					</button>
 				</div>
-			</div>	
-	    </div>
-
-      <div id='restaurants'>
-	      {this.state.restaurantInfo.length ? (
-	        <Searched>
-	          {this.state.restaurantInfo.map(restaurant => (
-	            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-	            	value={restaurant._id}
-	            >              
-								<p> Name of Restaurant: {restaurant.name} </p>
-								<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-								<p> Data Summary: 
-									<ul>
-										<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-										<li>Yelp URL: {restaurant.yelpURL} </li>
-									</ul>
-								</p>
-	            </Searcheditems>
-	          ))}
-	        </Searched>
-	      ) : (
-	        <h3>No Results to Display</h3>
-	      )}
-	    </div>
-
-			<button onClick={this.loadRestaurants}>
-				load restaurants
-			</button>
-
-			<button onClick={() => this.getAPIData()}>
-				button
-			</button>
-			<button onClick={this.yelppy}>
-				Yelp Button
-			</button>
+			</div>
 		</div>
 
 		)
