@@ -5,9 +5,9 @@ export const Details = (props) => (
 		<h3>
 		{props.name}
 		</h3>
-		{props.checkins.map(item => (
+		{/*props.checkins.map(item => (
 			<p>{item.checkins}</p>
-		))}
+		))*/}
 		<h3>
 			Avg Checkins </h3>
 		<p>{props.checkinsAvg}</p>

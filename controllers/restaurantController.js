@@ -11,7 +11,7 @@ module.exports = {
 			})
 			.catch(err => res.status(422).json(err));
 	},
-	testQuery: function(req, res) {
+	nameQuery: function(req, res) {
     	db.Restaurants
 			.find({ 
 				name: req.params.name

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Bar, Line, Pie} from 'react-chartjs-2';
+import "./Chart.css";
 
 class Chart extends Component {
 
@@ -13,7 +14,7 @@ class Chart extends Component {
 		displayTitle: true,
 		displayLegend: true,
 		legendPosition: 'top',
-		restaurantName: 'restaurant name'
+		chartName: 'Chart Name'
 	}
 
 	render() {
@@ -24,7 +25,7 @@ class Chart extends Component {
 					options={{
 						title: {
 							display: this.props.displayTitle,
-							text: this.props.restaurantName,
+							text: this.props.chartName,
 							fontSize:25
 						},
 						legend: {
