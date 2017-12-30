@@ -25,7 +25,24 @@ class findRestaurant extends Component {
 		filter: 'price',
 		filteredRestaurants: '',
 		details: false,
-		arrayObject: [{someKey: "someKey1"}]
+		// arrayObject: [{someKey: "someKey1"}],
+		chartData: {
+				labels: [10,20],
+				datasets: [
+					{
+						label: 'Difference',
+						data: [11,21],
+						backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ]
+					}
+				]
+			}
 	};
 
 	componentDidMount() {
@@ -64,12 +81,11 @@ class findRestaurant extends Component {
 		this.setState({
 			chartData: {
 				labels: labels,
-				datasets: [
+				datasets: this.state.chartData.datasets.concat([
 					{
-						label: 'Difference',
+						label: 'Difference2',
 						data: data,
 						backgroundColor: [
-			                'rgba(255, 99, 132, 0.2)',
 			                'rgba(54, 162, 235, 0.2)',
 			                'rgba(255, 206, 86, 0.2)',
 			                'rgba(75, 192, 192, 0.2)',
@@ -88,7 +104,7 @@ class findRestaurant extends Component {
 			  //               'rgba(255, 159, 64, 0.2)'
 			  //           ]	
 					// }
-				]
+				])
 			}
 		}, () => {
 			console.log(this.state);
