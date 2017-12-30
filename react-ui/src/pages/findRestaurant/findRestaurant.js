@@ -100,8 +100,8 @@ class findRestaurant extends Component {
     	.catch(err => console.log(err));
     };
 
-    testQuery = name => {
-    	API.testQuery(name)
+    nameQuery = name => {
+    	API.nameQuery(name)
     	.then(res => {
 			console.log(res)
     	})
@@ -119,7 +119,7 @@ class findRestaurant extends Component {
 	searchRestaurant = event => {
 		event.preventDefault();
 		if (this.state.restaurantName) {
-			API.testQuery(this.state.restaurantName)
+			API.nameQuery(this.state.restaurantName)
 			.then(res => {
 				this.setState({
 					searchedRestaurant: res.data
@@ -298,21 +298,21 @@ class findRestaurant extends Component {
 						Find A Restaurant
 					</h1>
 		      
-					<form>
-			      <Input
+				<form>
+			    <Input
 			        value={this.state.restaurantName}
 			        onChange={this.handleInputChange}
 			        name="restaurantName"
 			        placeholder="restaurant"
-			      />
-			      <Searchbtn
+			    />
+			    <Searchbtn
 			        disabled={!(this.state.restaurantName)}
 			        onClick={this.searchRestaurant}
-			      >
+			    >
 			       Search Restaurant
-			      </Searchbtn>
+			    </Searchbtn>
 
-			      <div id='search-restaurant'>
+			    <div id='search-restaurant'>
 			      	{this.state.searchedRestaurant.length ? (
 			        	<Searched>
 			          	{this.state.searchedRestaurant.map(restaurant => (

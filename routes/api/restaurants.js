@@ -5,7 +5,7 @@ router.route("/")
 	.get(restaurantController.findAll);
 
 router.route("/:name")
-	.get(restaurantController.testQuery);
+	.get(restaurantController.nameQuery);
 
 router.route("/id/:id")
 	.get(restaurantController.returnDetails);
