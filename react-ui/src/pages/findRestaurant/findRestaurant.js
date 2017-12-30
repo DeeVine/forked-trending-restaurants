@@ -37,7 +37,8 @@ class findRestaurant extends Component {
 			            ]
 					}
 				]
-			}
+		},
+		searchedRestaurant: {}
 	};
 
 	componentDidMount() {
@@ -121,7 +122,7 @@ class findRestaurant extends Component {
 			API.testQuery(this.state.restaurantName)
 			.then(res => {
 				this.setState({
-					restaurantInfo: res.data
+					searchedRestaurant: res.data
 				})
 				console.log(res);
 				console.log(this.state);
@@ -306,10 +307,34 @@ class findRestaurant extends Component {
 			      />
 			      <Searchbtn
 			        disabled={!(this.state.restaurantName)}
-			        onClick={this.handleFormSubmit}
+			        onClick={this.searchRestaurant}
 			      >
 			       Search Restaurant
 			      </Searchbtn>
+
+			      <div id='search-restaurant'>
+			      	{this.state.searchedRestaurant.length ? (
+			        	<Searched>
+			          	{this.state.searchedRestaurant.map(restaurant => (
+				            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+				            	value={restaurant._id}
+				            >              
+											<p> Name of Restaurant: {restaurant.name} </p>
+											<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+											<p> Data Summary: 
+												<ul>
+													<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+													<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+												</ul>
+											</p>
+				            </Searcheditems>
+				          	))}
+			       		</Searched>
+						) : (
+						<h3>No Results to Display</h3>
+						)}
+			    </div>
+
 			    </form>
 
 		      	{/*<button onClick={() => this.generateChartData(this.state.diffArr) }>
