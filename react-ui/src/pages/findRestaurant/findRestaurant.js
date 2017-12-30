@@ -25,7 +25,7 @@ class findRestaurant extends Component {
 		filter: 'price',
 		filteredRestaurants: '',
 		details: false,
-		// arrayObject: [{someKey: "someKey1"}],
+		arrayObject: [{someKey: "someKey1"}],
 		chartData: {
 				labels: [10,20],
 				datasets: [
@@ -34,11 +34,6 @@ class findRestaurant extends Component {
 						data: [11,21],
 						backgroundColor: [
 			                'rgba(255, 99, 132, 0.2)',
-			                'rgba(54, 162, 235, 0.2)',
-			                'rgba(255, 206, 86, 0.2)',
-			                'rgba(75, 192, 192, 0.2)',
-			                'rgba(153, 102, 255, 0.2)',
-			                'rgba(255, 159, 64, 0.2)'
 			            ]
 					}
 				]
@@ -59,6 +54,7 @@ class findRestaurant extends Component {
 			.catch(err => console.log(err));
   	};
 
+  	//testing addding additional objects to arrays in state
   	addArrayObj = (newObject) => {
   		this.setState({
   			arrayObject: this.state.arrayObject.concat([newObject])
@@ -78,32 +74,23 @@ class findRestaurant extends Component {
 			return checkins.difference
 		})
 
+		//generate random color for new line
+		const dynamicColors = function() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return "rgba(" + r + "," + g + "," + b + ", 0.2)";
+         };
+
 		this.setState({
 			chartData: {
 				labels: labels,
 				datasets: this.state.chartData.datasets.concat([
 					{
-						label: 'Difference2',
+						label: this.state.restaurantDetails.name,
 						data: data,
-						backgroundColor: [
-			                'rgba(54, 162, 235, 0.2)',
-			                'rgba(255, 206, 86, 0.2)',
-			                'rgba(75, 192, 192, 0.2)',
-			                'rgba(153, 102, 255, 0.2)',
-			                'rgba(255, 159, 64, 0.2)'
-			            ]
+						backgroundColor: [dynamicColors()]
 					}
-					// ,{
-					// 	label: 'rating',
-					// 	data: [952, 970, 120],
-					// 	backgroundColor: [
-			  //               'rgba(54, 162, 235, 0.2)',
-			  //               'rgba(255, 206, 86, 0.2)',
-			  //               'rgba(75, 192, 192, 0.2)',
-			  //               'rgba(153, 102, 255, 0.2)',
-			  //               'rgba(255, 159, 64, 0.2)'
-			  //           ]	
-					// }
 				])
 			}
 		}, () => {
@@ -156,8 +143,8 @@ class findRestaurant extends Component {
 		const id = event.currentTarget.getAttribute('value');
 		API.returnDetails(id)
 			.then(res => {
-		  	const div = document.getElementById('restaurants')
-				div.innerHTML = ''
+		  	const div = document.querySelector('.data-section')
+				// div.innerHTML = ''
 				console.log(res.data[0])
 
 				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
@@ -222,8 +209,6 @@ class findRestaurant extends Component {
 		let mean = Mathy.getMean(diff)
 		return Mathy.roundValue(mean)
 	};
-
-
 
 	findTotalStats = (arr) => {
 		var checkins = [];
@@ -339,7 +324,7 @@ class findRestaurant extends Component {
 
       	<div className="data-section columns">
       		<div className="column is-three-quarters">
-	      		<Chart className='line-chart' chartData={this.state.chartData} restaurantName={this.state.restaurantDetails.name} legendPosition="top"/>
+	      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
 	      	</div>
 	      	<div className="column auto">
 	      		<div className="data-navigation">
