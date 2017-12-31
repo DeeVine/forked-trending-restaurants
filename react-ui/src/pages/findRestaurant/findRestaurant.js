@@ -326,29 +326,36 @@ class findRestaurant extends Component {
 							        onClick={this.searchRestaurant}
 							    >
 							       Search Restaurant
-							    </Searchbtn>
+							    </Searchbtn>					   
 							    <div id='search-restaurant'>
 							      	{this.state.searchedRestaurant.length ? (
-							        	<Searched>
-							          	{this.state.searchedRestaurant.map(restaurant => (
-								            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-								            	value={restaurant._id}
-								            >              
-															<p> Name of Restaurant: {restaurant.name} </p>
-															<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-															<p> Data Summary: 
-																<ul>
-																	<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-																	<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
-																</ul>
-															</p>
-								            </Searcheditems>
-								          	))}
-							       		</Searched>
+							      		<CSSTransitionGroup
+											transitionName="example"
+											transitionAppear={true}
+											transitionAppearTimeout={500}
+											transitionEnter={false}
+											transitionLeave={false}>
+								        	<Searched>
+								          	{this.state.searchedRestaurant.map(restaurant => (
+									            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+									            	value={restaurant._id}
+									            >              
+																<p> Name of Restaurant: {restaurant.name} </p>
+																<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+																<p> Data Summary: 
+																	<ul>
+																		<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+																		<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+																	</ul>
+																</p>
+									            </Searcheditems>
+									          	))}
+								       		</Searched>
+							       		</CSSTransitionGroup>
 										) : (
 										<h3>No Results to Display</h3>
-										)}
-							    </div>
+										)}		
+							    </div> 		    
 						    </form>
 
 		      				</div>
