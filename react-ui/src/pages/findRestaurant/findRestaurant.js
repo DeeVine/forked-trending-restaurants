@@ -24,7 +24,11 @@ class findRestaurant extends Component {
 		restaurantId: "",
 		filter: 'price',
 		filteredRestaurants: '',
-		details: false
+		details: false,
+		filteredTotal: "",
+		allTotal: "",
+		priceTotal: "",
+		categoryTotal: ""
 	};
 
 	componentDidMount() {
@@ -70,7 +74,7 @@ class findRestaurant extends Component {
 					}
 					// ,{
 					// 	label: 'rating',
-					// 	data: [952, 970, 120],
+					// 	data: [952, 970, 12ux-x60],
 					// 	backgroundColor: [
 			  //               'rgba(54, 162, 235, 0.2)',
 			  //               'rgba(255, 206, 86, 0.2)',
