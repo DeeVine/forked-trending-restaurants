@@ -393,6 +393,8 @@ class findRestaurant extends Component {
 					      	</div>
 					      	<div className="column auto">
 					      		<div className="data-navigation">
+					      			<p class='percentage'>+75% Increase</p>
+					      			<p class='percentage'>-30% Decrease</p>
 									{this.state.details ? (
 											<Details 
 												name={this.state.restaurantDetails.name}
