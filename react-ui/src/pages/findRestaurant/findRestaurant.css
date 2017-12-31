@@ -2,7 +2,16 @@
 	margin-bottom: 60px
 }
 
-/*.data-section {
-	border: solid black 2px;
-	margin: 20px 20px 100px 20px;
-}*/
+.data-section {
+	height: 100vh;
+	padding-bottom: 60px;
+}
+
+.example-appear {
+  opacity: 0.01;
+}
+
+.example-appear.example-appear-active {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}

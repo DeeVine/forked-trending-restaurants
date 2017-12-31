@@ -12,7 +12,3 @@
 .level:not(:last-child) {
 	margin-bottom: 0px;
 }
-
-.data-section {
-	height: 100vh;
-}

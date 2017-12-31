@@ -9,6 +9,8 @@ import FilterData from "../../components/FilterData"
 import "./findRestaurant.css";
 import numjs from 'numjs';
 import Mathy from "../../utils/Mathy.js";
+import { CSSTransitionGroup } from 'react-transition-group' // ES6
+
 
 //Need to pass value from input field
 //Style chart and info into one element
@@ -292,13 +294,23 @@ class findRestaurant extends Component {
 
 		return (
 		<div>
+
+			<CSSTransitionGroup
+		      transitionName="example"
+		      transitionAppear={true}
+		      transitionAppearTimeout={500}
+		      transitionEnter={false}
+		      transitionLeave={false}>
+		      <h1>Fading at Initial Mount</h1>
+		    </CSSTransitionGroup>
+
 			<div className="wrapper">	
 			{/*Main section*/}
 		      	<div className="data-section columns">
 		      		<div className="side-nav column is-2">
 		      			<Sidenav/>
 		      		</div>
-		      		<div className="column is-10">
+		      		<div className="column auto">
 		      			<div className='columns'>
 		      				<div className="column is-12">
 		      					<h1> Find A Restaurant </h1>
