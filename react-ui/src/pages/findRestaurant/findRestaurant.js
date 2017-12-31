@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Input, Form, Searchbtn } from "../../components/Form";
 import { Searched, Searcheditems } from "../../components/Searched";
 import Chart from "../../components/Chart";
+import Sidenav from "../../components/Sidenav";
 import API from "../../utils/API.js";
 import { Details } from "../../components/Details"
 import FilterData from "../../components/FilterData"
@@ -25,7 +26,6 @@ class findRestaurant extends Component {
 		filter: 'price',
 		filteredRestaurants: '',
 		details: false,
-		arrayObject: [{someKey: "someKey1"}],
 		chartData: {
 				labels: [10,20],
 				datasets: [
@@ -292,90 +292,88 @@ class findRestaurant extends Component {
 
 		return (
 		<div>
-			<div className="wrapper">
-				<div className="main container-fluid">
-					<h1>
-						Find A Restaurant
-					</h1>
-		      
-				<form>
-			    <Input
-			        value={this.state.restaurantName}
-			        onChange={this.handleInputChange}
-			        name="restaurantName"
-			        placeholder="restaurant"
-			    />
-			    <Searchbtn
-			        disabled={!(this.state.restaurantName)}
-			        onClick={this.searchRestaurant}
-			    >
-			       Search Restaurant
-			    </Searchbtn>
-
-			    <div id='search-restaurant'>
-			      	{this.state.searchedRestaurant.length ? (
-			        	<Searched>
-			          	{this.state.searchedRestaurant.map(restaurant => (
-				            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-				            	value={restaurant._id}
-				            >              
-											<p> Name of Restaurant: {restaurant.name} </p>
-											<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-											<p> Data Summary: 
-												<ul>
-													<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-													<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
-												</ul>
-											</p>
-				            </Searcheditems>
-				          	))}
-			       		</Searched>
-						) : (
-						<h3>No Results to Display</h3>
-						)}
-			    </div>
-
-			    </form>
-
-		      	{/*<button onClick={() => this.generateChartData(this.state.diffArr) }>
-					Get Chart Data
-				</button>
-
-				<button onClick={() => this.addArrayObj({nextObjectkey: "testing2"}) }>
-					Add Array Object
-				</button>*/}
-
+			<div className="wrapper">	
+			{/*Main section*/}
 		      	<div className="data-section columns">
-		      		<div className="column is-three-quarters">
-			      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
-			      	</div>
-			      	<div className="column auto">
-			      		<div className="data-navigation">
-							{this.state.details ? (
-									<Details 
-										name={this.state.restaurantDetails.name}
-										checkins={this.state.restaurantDetails.checkins}
-										checkinsAvg={this.state.checkinsAvg}
-										ratingCountAvg={this.state.ratingsAvg}
-										reviewsAvg={this.state.reviewsAvg}
-										totals={this.state.totalAvg}
-										handleInputChange={this.handleInputChange}
-										loadFilter={this.loadFilter}
-									/>
-									) : (
-									null
-								)}
-								{this.state.filteredRestaurants.length ? (
-									<h4> Something </h4>
-									// <FilterData />
-								) : (
-									<h4> Nothing </h4>
-								)}
-						</div>
-					</div>	
+		      		<div className="side-nav column is-2">
+		      			<Sidenav/>
+		      		</div>
+		      		<div className="column is-10">
+		      			<div className='columns'>
+		      				<div className="column is-12">
+		      					<h1> Find A Restaurant </h1>
+		      				<form>
+							    <Input
+							        value={this.state.restaurantName}
+							        onChange={this.handleInputChange}
+							        name="restaurantName"
+							        placeholder="restaurant"
+							    />
+							    <Searchbtn
+							        disabled={!(this.state.restaurantName)}
+							        onClick={this.searchRestaurant}
+							    >
+							       Search Restaurant
+							    </Searchbtn>
+							    <div id='search-restaurant'>
+							      	{this.state.searchedRestaurant.length ? (
+							        	<Searched>
+							          	{this.state.searchedRestaurant.map(restaurant => (
+								            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+								            	value={restaurant._id}
+								            >              
+															<p> Name of Restaurant: {restaurant.name} </p>
+															<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+															<p> Data Summary: 
+																<ul>
+																	<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+																	<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+																</ul>
+															</p>
+								            </Searcheditems>
+								          	))}
+							       		</Searched>
+										) : (
+										<h3>No Results to Display</h3>
+										)}
+							    </div>
+						    </form>
+
+		      				</div>
+		      			</div>
+		      			<div className='columns'>
+			      			<div className="column is-three-fifths">
+					      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
+					      	</div>
+					      	<div className="column is-two-fifths">
+					      		<div className="data-navigation">
+									{this.state.details ? (
+											<Details 
+												name={this.state.restaurantDetails.name}
+												checkins={this.state.restaurantDetails.checkins}
+												checkinsAvg={this.state.checkinsAvg}
+												ratingCountAvg={this.state.ratingsAvg}
+												reviewsAvg={this.state.reviewsAvg}
+												totals={this.state.totalAvg}
+												handleInputChange={this.handleInputChange}
+												loadFilter={this.loadFilter}
+											/>
+											) : (
+											null
+										)}
+										{this.state.filteredRestaurants.length ? (
+											<h4> Something </h4>
+											// <FilterData />
+										) : (
+											<h4> Nothing </h4>
+										)}
+								</div>
+							</div>
+						</div>	
+			    	</div>
 			    </div>
 
-		      	<div id='restaurants'>
+		      	{/*<div id='restaurants'>
 			      	{this.state.restaurantInfo.length ? (
 			        	<Searched>
 			          	{this.state.restaurantInfo.map(restaurant => (
@@ -396,20 +394,9 @@ class findRestaurant extends Component {
 						) : (
 						<h3>No Results to Display</h3>
 						)}
-			    </div>
-
-					<button onClick={this.loadRestaurants}>
-						load restaurants
-					</button>
-
-					<button onClick={() => this.getAPIData()}>
-						button
-					</button>
-					<button onClick={this.yelppy}>
-						Yelp Button
-					</button>
+			    </div>*/}
 				</div>
-			</div>
+			
 		</div>
 
 		)
