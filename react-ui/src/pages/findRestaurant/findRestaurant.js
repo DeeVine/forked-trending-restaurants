@@ -18,30 +18,38 @@ import { CSSTransitionGroup } from 'react-transition-group' // ES6
 //Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
 
 class findRestaurant extends Component {
+
+	constructor (props) {
+		super(props);
+		this.state = {
+			restaurantArr: [],
+			restaurantName: "Homeroom",
+			restaurantInfo: {},
+			restaurantDetails: false,
+			restaurantId: "",
+			filter: 'price',
+			filteredRestaurants: '',
+			details: false,
+			chartData: {
+					labels: [10,20],
+					datasets: [
+						{
+							label: 'Difference',
+							data: [11,21],
+							backgroundColor: [
+				                'rgba(255, 99, 132, 0.2)',
+				            ]
+						}
+					]
+			},
+			searchedRestaurant: {},
+			showResults: true,
+			showline: true,
+			showbar: true
+		};
+	}
   
-	state = {
-		restaurantArr: [],
-		restaurantName: "Homeroom",
-		restaurantInfo: {},
-		restaurantDetails: false,
-		restaurantId: "",
-		filter: 'price',
-		filteredRestaurants: '',
-		details: false,
-		chartData: {
-				labels: [10,20],
-				datasets: [
-					{
-						label: 'Difference',
-						data: [11,21],
-						backgroundColor: [
-			                'rgba(255, 99, 132, 0.2)',
-			            ]
-					}
-				]
-		},
-		searchedRestaurant: {}
-	};
+	
 
 	componentDidMount() {
     	API.AllReviews()
@@ -290,26 +298,43 @@ class findRestaurant extends Component {
 
 	};
 
+	onClick = () => {
+        this.setState({ showResults: !this.state.showResults });
+    };
+
+    showline = () => {
+        this.setState({ showline: !this.state.showline });
+    };
+
+    showbar = () => {
+        this.setState({ showbar: !this.state.showbar });
+    };
+
 	render() {
 
 		return (
 		<div>
-
-			<CSSTransitionGroup
-		      transitionName="example"
-		      transitionAppear={true}
-		      transitionAppearTimeout={500}
-		      transitionEnter={false}
-		      transitionLeave={false}>
-		      <h1>Fading at Initial Mount</h1>
-		    </CSSTransitionGroup>
-
 			<div className="wrapper">	
 			{/*Main section*/}
+				<button onClick={this.onClick}>showResults true</button> 
+				<button onClick={this.showline}>showline</button> 
+				<button onClick={this.showbar}>showbar</button> 
+
 		      	<div className="data-section columns">
-		      		<div className="side-nav column is-2">
-		      			<Sidenav/>
-		      		</div>
+
+		      		{ this.state.showResults ? 
+		      			<div className="side-nav column is-2">
+			      			<CSSTransitionGroup
+								transitionName="example"
+								transitionAppear={true}
+								transitionAppearTimeout={500}
+								transitionEnter={false}
+								transitionLeave={true}>
+				      			<Sidenav/>
+				      		</CSSTransitionGroup>
+			      		</div>  		
+		      		: null }
+		      		
 		      		<div className="column auto">
 		      			<div className='columns'>
 		      				<div className="column is-12">
@@ -326,7 +351,8 @@ class findRestaurant extends Component {
 							        onClick={this.searchRestaurant}
 							    >
 							       Search Restaurant
-							    </Searchbtn>					   
+							    </Searchbtn>	
+							   
 							    <div id='search-restaurant'>
 							      	{this.state.searchedRestaurant.length ? (
 							      		<CSSTransitionGroup
@@ -334,10 +360,10 @@ class findRestaurant extends Component {
 											transitionAppear={true}
 											transitionAppearTimeout={500}
 											transitionEnter={false}
-											transitionLeave={false}>
+											transitionLeave={true}>
 								        	<Searched>
 								          	{this.state.searchedRestaurant.map(restaurant => (
-									            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+									            <Searcheditems className='searcheditems' key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
 									            	value={restaurant._id}
 									            >              
 																<p> Name of Restaurant: {restaurant.name} </p>
@@ -362,7 +388,8 @@ class findRestaurant extends Component {
 		      			</div>
 		      			<div className='columns'>
 			      			<div className="column is-three-fifths">
-					      		<Chart className='line-chart' chartData={this.state.chartData} chartName="Average Checkins by Date" legendPosition="top"/>
+					      		<Chart className='charts' chartData={this.state.chartData} chartName="Average Checkins by Date"
+					      		 showline={this.state.showline} showbar={this.state.showbar}legendPosition="top"/>
 					      	</div>
 					      	<div className="column is-two-fifths">
 					      		<div className="data-navigation">
@@ -380,12 +407,7 @@ class findRestaurant extends Component {
 											) : (
 											null
 										)}
-										{this.state.filteredRestaurants.length ? (
-											<h4> Something </h4>
-											// <FilterData />
-										) : (
-											<h4> Nothing </h4>
-										)}
+										
 								</div>
 							</div>
 						</div>	
