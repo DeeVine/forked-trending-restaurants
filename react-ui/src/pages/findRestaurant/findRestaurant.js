@@ -43,7 +43,7 @@ class findRestaurant extends Component {
 					]
 			},
 			searchedRestaurant: {},
-			showResults: true,
+			showsidenav: true,
 			showline: true,
 			showbar: true
 		};
@@ -299,7 +299,7 @@ class findRestaurant extends Component {
 	};
 
 	onClick = () => {
-        this.setState({ showResults: !this.state.showResults });
+        this.setState({ showsidenav: !this.state.showsidenav });
     };
 
     showline = () => {
@@ -316,13 +316,13 @@ class findRestaurant extends Component {
 		<div>
 			<div className="wrapper">	
 			{/*Main section*/}
-				<button onClick={this.onClick}>showResults true</button> 
+				<button onClick={this.onClick}>showsidenav true</button> 
 				<button onClick={this.showline}>showline</button> 
 				<button onClick={this.showbar}>showbar</button> 
 
 		      	<div className="data-section columns">
 
-		      		{ this.state.showResults ? 
+		      		{ this.state.showsidenav ? 
 		      			<div className="side-nav column is-2">
 			      			<CSSTransitionGroup
 								transitionName="example"
@@ -391,7 +391,7 @@ class findRestaurant extends Component {
 					      		<Chart className='charts' chartData={this.state.chartData} chartName="Average Checkins by Date"
 					      		 showline={this.state.showline} showbar={this.state.showbar}legendPosition="top"/>
 					      	</div>
-					      	<div className="column is-two-fifths">
+					      	<div className="column auto">
 					      		<div className="data-navigation">
 									{this.state.details ? (
 											<Details 

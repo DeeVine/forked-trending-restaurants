@@ -1,4 +1,37 @@
 .sidenav {
+	color: white;
 	height: 100%;
-	background-color: grey;
+	background-color: #423d3d;
+}
+
+.sidenav li {
+	padding: 20px 0px 20px 10px;
+}
+
+.sidenav li:hover { 
+   color: yellow;
+}
+
+.profile {
+	text-align: center
+}
+
+.sidenav img {
+	max-width: 210px;
+	padding: 10px;
+}
+
+.sidenav hr {
+	background-color: #252323
+}
+
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid white;
+  position: relative;
+  bottom: -13px;
+  left: 5px;
 }
