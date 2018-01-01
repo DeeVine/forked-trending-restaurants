@@ -5,3 +5,7 @@
 .list li {
   list-style-type: none;
 }
+
+.home {
+	text-align: center;
+}
