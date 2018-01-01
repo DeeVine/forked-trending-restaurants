@@ -5,17 +5,15 @@ import Home from "./pages/Home";
 import findRestaurant from "./pages/findRestaurant";
 import Login from "./pages/Login";
 import Footer from "./components/Footer";
-import Main from "./components/Main";
-
+import "./App.css";
 
 const App = () =>
   <Router>
     <div> 
-    <Navbar />
+    	<Navbar />
         <Route exact path="/" component={Home} />
         <Route exact path="/Login" component={Login} />
-        <Route exact path="/findRestaurant" component={findRestaurant} />
-        <Route exact path="/Main" component={Main} />
+        <Route exact path="/findRestaurant" component={findRestaurant} /> 
       <Footer />
     </div>
   </Router>;

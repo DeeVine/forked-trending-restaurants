@@ -1,37 +1,38 @@
-h1 {
+/*h1 {
 	text-align: center;
-}
+}*/
 
-.wrapper {
-	margin: 40px;
+/*.wrapper {
+	margin: 40px 40px 80px 40px;
 	border: 1px solid black;
 	border-radius: 15px;
 	overflow: hidden;
-}
+}*/
 
-.input-header {
+/*.input-header {
 	text-align: center;
-}
+}*/
 
-.section-header {
+/*.section-header {
 	margin: 0px;
 	padding-bottom: 25px;
 	border-bottom: 2px solid black;
 	background-color: black;
 	color: white;
-}
-
+}*/
+/*
 .main {
-	/*text-align: center;*/
-}
-
+	text-align: center;
+	margin-bottom: 60px;
+}*/
+/*
 .main-header {
 	font-size: 35px;
 	color: black;
 	text-decoration: underline;
-}
+}*/
 
-.sub-header {
+/*.sub-header {
 	font-size: 20px;
 	color: black;
-}
+}*/

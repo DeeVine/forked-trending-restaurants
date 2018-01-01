@@ -82,7 +82,7 @@ class Home extends Component {
 				Yelp Button
 			</button>
 
-			<div className="wrapper">
+			<div className="wrapper home">
 				<div className="main container-fluid">
 					<h1>Main Content Goes Here</h1>
 					<p>The content</p>
