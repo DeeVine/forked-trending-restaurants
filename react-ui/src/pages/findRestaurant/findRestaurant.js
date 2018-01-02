@@ -261,19 +261,19 @@ class findRestaurant extends Component {
 		// gets price total then sends to getalltotal, then getscategoriestotal
 		API.filterSearch('price', this.state.restaurantDetails.price)
 		.then(res => {
-			console.log(res)
-			let priceTotal = this.findTotalStats(res.data)
-			getAllTotal(priceTotal, getCategoryTotal)
+			const priceData = res.data
+			let priceTotal = this.findTotalStats(priceData)
+			getAllTotal(priceTotal, getCategoryTotal, priceData)
 			
 		})
 		.catch(err => console.log('ERROR: ',err))
 		
-		const getAllTotal = (priceTotal, callback) => {
-			let allTotal = this.findTotalStats(this.state.restaurantInfo)
-			callback(priceTotal, allTotal)
+		const getAllTotal = (priceTotal, getCategoryTotal, priceData) => {
+			const allTotal = this.findTotalStats(this.state.restaurantInfo)
+			getCategoryTotal(priceTotal, allTotal, priceData, eachDayTotal)
 		}
 		
-		const getCategoryTotal = (priceTotal, allTotal) => {
+		const getCategoryTotal = (priceTotal, allTotal, priceData, eachDayTotal) => {
 			let categoryTotal;
 			let categories = this.state.restaurantDetails.categories
 			let arrFirms = []
@@ -282,8 +282,8 @@ class findRestaurant extends Component {
 	
 				API.filterSearch('category', item.title)
 				.then(res => {
-						console.log(res.data)
-						res.data.forEach(item => {
+						const categoryData = res.data
+						categoryData.forEach(item => {
 							var index = arrFirms.findIndex(x => x.name === item.name)
 	
 							if (index === -1) {
@@ -292,15 +292,25 @@ class findRestaurant extends Component {
 								console.log('no push')
 							}
 						})
-	
 						categoryTotal = this.findTotalStats(arrFirms)
-						this.setState({
-							priceTotal: priceTotal,
-							allTotal: allTotal,
-							categoryTotal: categoryTotal
-						})
+						eachDayTotal(priceTotal, allTotal,categoryTotal, priceData, categoryData)
+
 				})
 				.catch(err => console.log(err))
+			})
+		}
+		// finds the total avg for each day for detail and for all in filter
+		const eachDayTotal = (priceTotal, allTotal, categoryTotal, priceData, categoryData) => {
+			const oneDetailData = this.state.restaurantInfo;
+			priceData.forEach(item => {
+				var index = item.checkins.filter(x => x.date === item.date)
+			
+				console.log(index)
+			})
+			this.setState({
+				priceTotal: priceTotal,
+				allTotal: allTotal,
+				categoryTotal: categoryTotal
 			})
 		}
 	};
