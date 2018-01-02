@@ -16,7 +16,7 @@ export default {
     return axios.get('api/restaurants/filter/' + type +'?filter=' + filter)
   },
 
-  testQuery: function (name) {
+  nameQuery: function (name) {
     return axios.get("api/restaurants/" + name);
   },
   

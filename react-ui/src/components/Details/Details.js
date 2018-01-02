@@ -16,8 +16,9 @@ export class Details extends Component {
 		{this.props.name}
 		</h3>
 		{this.props.checkins.map(item => (
+
 			<p>{item.checkins}</p>
-		))}
+		))*/}
 		<h3>
 			Avg Checkins </h3>
 		<p>{this.props.checkinsAvg}</p>

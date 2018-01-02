@@ -4,6 +4,11 @@
 	padding: 10px;
 	link-style: none;
 }
+
 .logo_page {
 	height: 90px;
+}
+
+.level:not(:last-child) {
+	margin-bottom: 0px;
 }

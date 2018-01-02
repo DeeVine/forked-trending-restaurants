@@ -1,9 +1,10 @@
 html { 
   height: 100%;
  }
+
 body {
-  min-height:100%; 
-  position:relative; 
+  height: 100vh;
+  display: flex;
   padding-bottom:60px; 
 }
 

@@ -1,22 +1,27 @@
-	import React, {Component} from 'react';
-	import { Input, Form, Searchbtn } from "../../components/Form";
-	import { Searched, Searcheditems } from "../../components/Searched";
-	import Chart from "../../components/Chart";
-	import API from "../../utils/API.js";
-	import { Details } from "../../components/Details"
-	import FilterData from "../../components/FilterData"
-	import "./findRestaurant.css";
-	import numjs from 'numjs';
-	import Mathy from "../../utils/Mathy.js";
+import React, {Component} from 'react';
+import { Input, Form, Searchbtn } from "../../components/Form";
+import { Searched, Searcheditems } from "../../components/Searched";
+import Chart from "../../components/Chart";
+import Sidenav from "../../components/Sidenav";
+import API from "../../utils/API.js";
+import { Details } from "../../components/Details"
+import FilterData from "../../components/FilterData"
+import "./findRestaurant.css";
+import numjs from 'numjs';
+import Mathy from "../../utils/Mathy.js";
+import { CSSTransitionGroup } from 'react-transition-group' // ES6
 
-	//Need to pass value from input field
-	//Style chart and info into one element
-	//Allow to click on element to view stats
-	//Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
 
-	class findRestaurant extends Component {
-	
-		state = {
+//Need to pass value from input field
+//Style chart and info into one element
+//Allow to click on element to view stats
+//Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
+
+class findRestaurant extends Component {
+
+	constructor (props) {
+		super(props);
+		this.state = {
 			restaurantArr: [],
 			restaurantName: "Homeroom",
 			restaurantInfo: {},
@@ -42,97 +47,116 @@
 					})
 					// this.generateChartData(this.state.restaurantInfo);
 					console.log(this.state);
+			chartData: {
+					labels: [10,20],
+					datasets: [
+						{
+							label: 'Difference',
+							data: [11,21],
+							backgroundColor: [
+				                'rgba(255, 99, 132, 0.2)',
+				            ]
+						}
+					]
+			},
+			searchedRestaurant: {},
+			showsidenav: true,
+			showline: true,
+			showbar: true
+		};
+	}
+  
+
+	componentDidMount() {
+    	API.AllReviews()
+			.then(res => {
+				console.log(res);
+				console.log(res.data);
+				this.setState({
+					restaurantInfo: res.data
 				})
 				.catch(err => console.log(err));
 				if (this.state.details) {
 					this.getTotals()
 				}
 		};
-
-		//create labels and data arrays and sets chartData state
-		generateChartData = (res) => {
-			// const differenceArr = res[0].rating_count;		
-			const labels = res.map(checkins => {
-				let queryDate = checkins.query_date.replace(/ .*/,'');
-				return queryDate;
-			})		
-			const data = res.map(checkins => {
-				return checkins.difference
-			})
-
-			this.setState({
-				chartData: {
-					labels: labels,
-					datasets: [
-						{
-							label: 'Difference',
-							data: data,
-							backgroundColor: [
-								'rgba(255, 99, 132, 0.2)',
-								'rgba(54, 162, 235, 0.2)',
-								'rgba(255, 206, 86, 0.2)',
-								'rgba(75, 192, 192, 0.2)',
-								'rgba(153, 102, 255, 0.2)',
-								'rgba(255, 159, 64, 0.2)'
-							]
-						}
-						// ,{
-						// 	label: 'rating',
-						// 	data: [952, 970, 12ux-x60],
-						// 	backgroundColor: [
-				//               'rgba(54, 162, 235, 0.2)',
-				//               'rgba(255, 206, 86, 0.2)',
-				//               'rgba(75, 192, 192, 0.2)',
-				//               'rgba(153, 102, 255, 0.2)',
-				//               'rgba(255, 159, 64, 0.2)'
-				//           ]	
-						// }
-					]
-				}
-			}, () => {
-				console.log(this.state);
-			})
-		};
-
-		loadRestaurants = () => {
-			API.AllReviews()
-			.then(res => {
-				console.log(res)
-			})
-			.catch(err => console.log(err));
-		};
-
-		testQuery = name => {
-			API.testQuery(name)
-			.then(res => {
-				console.log(res)
-			})
-			.catch(err => console.log(err));
-		};
-
-		//update state whenever field input changes
-		handleInputChange = event => {
-			const { name, value } = event.target;
-			this.setState({
-			[name]: value
-			});
-		};
-
-		searchRestaurant = event => {
-			event.preventDefault();
-			if (this.state.restaurantName) {
-				API.testQuery(this.state.restaurantName)
-				.then(res => {
-					this.setState({
-						restaurantInfo: res.data
-					})
-					console.log(res);
-					console.log(this.state);
-					// this.generateChartData(this.state.restaurantInfo)
-				})
-				.catch(err => console.log(err));
+            
+  	//create labels and data arrays and sets chartData state
+	generateChartData = (res) => {
+		// const differenceArr = res[0].rating_count;		
+		let labels = res.map(checkins => {
+			let queryDate = checkins.query_date.replace(/ .*/,'');
+			return queryDate;
+		})
+		//check if current data set is bigger, otherwise leave label state unchanged
+		if(labels.length <= this.state.chartData.labels.length) {
+			labels = this.state.chartData.labels;
+		}
+		const data = res.map(checkins => {
+			return checkins.difference
+		})
+		//generate random color for new dataset
+		const dynamicColors = function() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return "rgba(" + r + "," + g + "," + b + ", 0.2)";
+        };
+		this.setState({
+			chartData: {
+				labels: labels,
+				datasets: this.state.chartData.datasets.concat([
+					{
+						label: this.state.restaurantDetails.name,
+						data: data,
+						backgroundColor: [dynamicColors()]
+					}
+				])
 			}
-		};
+		}, () => {
+			console.log(this.state);
+		})
+	};
+
+	loadRestaurants = () => {
+    	API.AllReviews()
+    	.then(res => {
+			console.log(res)
+    	})
+    	.catch(err => console.log(err));
+    };
+
+    nameQuery = name => {
+    	API.nameQuery(name)
+    	.then(res => {
+			console.log(res)
+    	})
+    	.catch(err => console.log(err));
+    };
+
+    //update state whenever field input changes
+    handleInputChange = event => {
+		const { name, value } = event.target;
+		this.setState({
+		  [name]: value
+		});
+	};
+
+	searchRestaurant = event => {
+		event.preventDefault();
+		if (this.state.restaurantName) {
+			API.nameQuery(this.state.restaurantName)
+			.then(res => {
+				this.setState({
+					searchedRestaurant: res.data
+				})
+				console.log(res);
+				console.log(this.state);
+				// this.generateChartData(this.state.restaurantInfo)
+			})
+			.catch(err => console.log(err));
+		}
+  }
 
 		showDetails = event => {
 			const array = []
@@ -163,6 +187,7 @@
 						totalAvg: totalAvg
 					})
 					console.log(this.state)
+          this.generateChartData(this.state.diffArr)
 				})
 				.catch(err => console.log(err))
 		};
@@ -188,7 +213,6 @@
 					query_date: query_date
 				})
 			}		
-
 			return diff
 		};
 
@@ -205,8 +229,6 @@
 			let mean = Mathy.getMean(diff)
 			return Mathy.roundValue(mean)
 		};
-
-
 
 		findTotalStats = (arr) => {
 			var checkins = [];
@@ -294,9 +316,7 @@
 				// 	})
 				// 	.catch(err => console.log(err))
 				// })
-
 			}
-
 		};
 
 		getTotals = () => {
@@ -304,7 +324,6 @@
 			API.filterSearch('price', this.state.restaurantDetails.price)
 			.then(res => {
 				console.log(res)
-
 				let priceTotal = this.findTotalStats(res.data)
 				getAllTotal(priceTotal, getCategoryTotal)
 				
@@ -347,6 +366,152 @@
 				})
 			}
 		}
+	};
+
+	onClick = () => {
+        this.setState({ showsidenav: !this.state.showsidenav });
+    };
+
+    showline = () => {
+        this.setState({ showline: !this.state.showline });
+    };
+
+    showbar = () => {
+        this.setState({ showbar: !this.state.showbar });
+    };
+
+	render() {
+
+		return (
+		<div>
+			<div className="wrapper">	
+			{/*Main section*/}
+				<button onClick={this.onClick}>showsidenav true</button> 
+				<button onClick={this.showline}>showline</button> 
+				<button onClick={this.showbar}>showbar</button> 
+
+		      	<div className="data-section columns">
+
+		      		{ this.state.showsidenav ? 
+		      			<div className="side-nav column is-2">
+			      			<CSSTransitionGroup
+								transitionName="example"
+								transitionAppear={true}
+								transitionAppearTimeout={500}
+								transitionEnter={false}
+								transitionLeave={true}>
+				      			<Sidenav/>
+				      		</CSSTransitionGroup>
+			      		</div>  		
+		      		: null }
+		      		
+		      		<div className="column auto">
+		      			<div className='columns'>
+		      				<div className="column is-12">
+		      					<h1> Find A Restaurant </h1>
+		      				<form>
+							    <Input
+							        value={this.state.restaurantName}
+							        onChange={this.handleInputChange}
+							        name="restaurantName"
+							        placeholder="restaurant"
+							    />
+							    <Searchbtn
+							        disabled={!(this.state.restaurantName)}
+							        onClick={this.searchRestaurant}
+							    >
+							       Search Restaurant
+							    </Searchbtn>	
+							   
+							    <div id='search-restaurant'>
+							      	{this.state.searchedRestaurant.length ? (
+							      		<CSSTransitionGroup
+											transitionName="example"
+											transitionAppear={true}
+											transitionAppearTimeout={500}
+											transitionEnter={false}
+											transitionLeave={true}>
+								        	<Searched>
+								          	{this.state.searchedRestaurant.map(restaurant => (
+									            <Searcheditems className='searcheditems' key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+									            	value={restaurant._id}
+									            >              
+																<p> Name of Restaurant: {restaurant.name} </p>
+																<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+																<p> Data Summary: 
+																	<ul>
+																		<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+																		<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+																	</ul>
+																</p>
+									            </Searcheditems>
+									          	))}
+								       		</Searched>
+							       		</CSSTransitionGroup>
+										) : (
+										<h3>No Results to Display</h3>
+										)}		
+							    </div> 		    
+						    </form>
+
+		      				</div>
+		      			</div>
+		      			<div className='columns'>
+			      			<div className="column is-three-fifths">
+					      		<Chart className='charts' chartData={this.state.chartData} chartName="Average Checkins by Date"
+					      		 showline={this.state.showline} showbar={this.state.showbar}legendPosition="top"/>
+					      	</div>
+					      	<div className="column auto">
+					      		<div className="data-navigation">
+					      			<p class='percentage'>+75% Increase</p>
+					      			<p class='percentage'>-30% Decrease</p>
+									{this.state.details ? (
+											<Details 
+												name={this.state.restaurantDetails.name}
+												checkins={this.state.restaurantDetails.checkins}
+												checkinsAvg={this.state.checkinsAvg}
+												ratingCountAvg={this.state.ratingsAvg}
+												reviewsAvg={this.state.reviewsAvg}
+												totals={this.state.totalAvg}
+												handleInputChange={this.handleInputChange}
+												loadFilter={this.loadFilter}
+                        getTotals={() => this.getTotals()}
+											/>
+											) : (
+											null
+										)}
+										
+								</div>
+							</div>
+						</div>	
+			    	</div>
+			    </div>
+
+		      	{/*<div id='restaurants'>
+			      	{this.state.restaurantInfo.length ? (
+			        	<Searched>
+			          	{this.state.restaurantInfo.map(restaurant => (
+				            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+				            	value={restaurant._id}
+				            >              
+											<p> Name of Restaurant: {restaurant.name} </p>
+											<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+											<p> Data Summary: 
+												<ul>
+													<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+													<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+												</ul>
+											</p>
+				            </Searcheditems>
+				          	))}
+			       		</Searched>
+						) : (
+						<h3>No Results to Display</h3>
+						)}
+			    </div>*/}
+				</div>
+			
+		</div>
 
 		render() {
 

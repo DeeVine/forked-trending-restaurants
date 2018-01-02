@@ -1,11 +1,12 @@
 .footer {
-	position: fixed; 
-    left: 0 ;
-    right: 0; 
-    bottom: 0px; 
-    height: 60px;
+	flex-grow: 0;
+	bottom: 0;
+  left: 0 ;
+  right: 0; 
+  bottom: 0px; 
+  height: 60px;
 	width: 100%;
-	padding: 20px 20px 50px 20px;
 	background: black;
+	padding: 0px;
 	color: white;
 }
