@@ -34,19 +34,7 @@ class findRestaurant extends Component {
 			allTotal: "",
 			priceTotal: "",
 			categoryTotal: "",
-			totalAvg: ""
-		};
-
-		componentDidMount() {
-			API.AllReviews()
-				.then(res => {
-					console.log(res);
-					console.log(res.data);
-					this.setState({
-						restaurantInfo: res.data
-					})
-					// this.generateChartData(this.state.restaurantInfo);
-					console.log(this.state);
+			totalAvg: "",
 			chartData: {
 					labels: [10,20],
 					datasets: [
@@ -54,8 +42,8 @@ class findRestaurant extends Component {
 							label: 'Difference',
 							data: [11,21],
 							backgroundColor: [
-				                'rgba(255, 99, 132, 0.2)',
-				            ]
+												'rgba(255, 99, 132, 0.2)',
+										]
 						}
 					]
 			},
@@ -66,21 +54,18 @@ class findRestaurant extends Component {
 		};
 	}
   
-
 	componentDidMount() {
-    	API.AllReviews()
-			.then(res => {
-				console.log(res);
-				console.log(res.data);
-				this.setState({
-					restaurantInfo: res.data
-				})
-				.catch(err => console.log(err));
-				if (this.state.details) {
-					this.getTotals()
-				}
-		};
-            
+		API.AllReviews()
+		.then(res => {
+			console.log(res);
+			console.log(res.data);
+			this.setState({
+				restaurantInfo: res.data
+			})
+		})
+		.catch(err => console.log(err));
+	}      
+
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
 		// const differenceArr = res[0].rating_count;		
@@ -119,23 +104,23 @@ class findRestaurant extends Component {
 	};
 
 	loadRestaurants = () => {
-    	API.AllReviews()
-    	.then(res => {
-			console.log(res)
-    	})
-    	.catch(err => console.log(err));
-    };
+		API.AllReviews()
+		.then(res => {
+		console.log(res)
+		})
+		.catch(err => console.log(err));
+	};
 
-    nameQuery = name => {
-    	API.nameQuery(name)
-    	.then(res => {
-			console.log(res)
-    	})
-    	.catch(err => console.log(err));
-    };
+	nameQuery = name => {
+		API.nameQuery(name)
+		.then(res => {
+		console.log(res)
+		})
+		.catch(err => console.log(err));
+	};
 
     //update state whenever field input changes
-    handleInputChange = event => {
+  handleInputChange = event => {
 		const { name, value } = event.target;
 		this.setState({
 		  [name]: value
@@ -158,213 +143,165 @@ class findRestaurant extends Component {
 		}
   }
 
-		showDetails = event => {
-			const array = []
-			const id = event.currentTarget.getAttribute('value');
-			API.returnDetails(id)
+	showDetails = event => {
+		const array = []
+		const id = event.currentTarget.getAttribute('value');
+		API.returnDetails(id)
+			.then(res => {
+				console.log(res.data[0])
+
+				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
+				let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
+				let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
+				let diff = this.findDiff(res.data[0].checkins, 'checkins');
+				let ratingDiff = this.findDiff(res.data[0].rating_count, 'rating_count');
+				let reviewDiff = this.findDiff(res.data[0].reviews, 'review_count');
+				let totalAvg = this.findTotalStats(this.state.restaurantInfo)
+
+				this.setState({
+					restaurantDetails: res.data[0],
+					details: true,
+					checkinsAvg: checkinsAvg,
+					reviewsAvg: reviewsAvg,
+					ratingsAvg: ratingsAvg,
+					diffArr: diff,
+					ratingDiff: ratingDiff,
+					reviewDiff: reviewDiff,
+					totalAvg: totalAvg
+				})
+				console.log(this.state)
+				this.generateChartData(this.state.diffArr)
+			})
+			.catch(err => console.log(err))
+	};
+
+	findDiff = (arr, name) => {
+		// returns an arry of obj with date and count
+		const values = []
+		for (var i = 0; i < arr.length; i++) {
+			values.push({
+				count: arr[i][name],
+				query_date: arr[i]['query_date']
+			})
+		}
+
+		const diff = []
+		for (var i = 0; i < values.length - 1; i++) {
+			let difference = values[i+1]['count'] - values[i]['count']
+			let percentChange = Mathy.roundValue(difference / values[i]['count'])
+			let query_date = values[i+1]['query_date']
+			diff.push({
+				difference: difference,
+				percentChange: percentChange,
+				query_date: query_date
+			})
+		}		
+		return diff
+	};
+
+	findDifference = (arr, name) => {
+		const values = []
+		for (var i = 0; i < arr.length; i++) {
+			values.push(arr[i][name])
+		}
+		const diff = []
+		for (var i = 0; i < values.length - 1; i++) {
+			let difference = values[i+1] - values[i]
+			diff.push(difference)
+		}
+		let mean = Mathy.getMean(diff)
+		return Mathy.roundValue(mean)
+	};
+
+	findTotalStats = (arr) => {
+		var checkins = [];
+		var ratings = [];
+		var reviews = [];
+		const obj = {}
+		for (var i = 0; i < arr.length; i++) {
+			checkins.push(this.findDifference(arr[i].checkins, 'checkins'))
+			ratings.push(this.findDifference(arr[i].rating_count, 'rating_count'))
+			reviews.push(this.findDifference(arr[i].reviews, 'review_count'))
+		}
+
+		checkins = numjs.array(checkins);
+		ratings = numjs.array(ratings);
+		reviews = numjs.array(reviews);
+
+		const checkinsMean = Mathy.roundValue(checkins.mean(), -2)
+		const ratingsMean = Mathy.roundValue(ratings.mean(), -2)
+		const reviewsMean = Mathy.roundValue(reviews.mean(), -2)
+
+		obj.checkinsMean = checkinsMean
+		obj.ratingsMean = ratingsMean
+		obj.reviewsMean = reviewsMean
+
+		return obj;
+	};
+
+	loadFilter = (ev) => {
+		console.log(ev.target.value)
+
+		if (ev.target.value === 'price') {
+			this.setState({
+				totalAvg: this.state.priceTotal
+			})
+		} else if (ev.target.value === 'all') {
+			this.setState({
+				totalAvg: this.state.allTotal
+			})
+		} else {
+			this.setState({
+				totalAvg: this.state.categoryTotal
+			})
+		}
+	};
+
+	getTotals = () => {
+		// gets price total then sends to getalltotal, then getscategoriestotal
+		API.filterSearch('price', this.state.restaurantDetails.price)
+		.then(res => {
+			console.log(res)
+			let priceTotal = this.findTotalStats(res.data)
+			getAllTotal(priceTotal, getCategoryTotal)
+			
+		})
+		.catch(err => console.log('ERROR: ',err))
+		
+		const getAllTotal = (priceTotal, callback) => {
+			let allTotal = this.findTotalStats(this.state.restaurantInfo)
+			callback(priceTotal, allTotal)
+		}
+		
+		const getCategoryTotal = (priceTotal, allTotal) => {
+			let categoryTotal;
+			let categories = this.state.restaurantDetails.categories
+			let arrFirms = []
+		
+			categories.forEach(item => {
+	
+				API.filterSearch('category', item.title)
 				.then(res => {
-				const div = document.getElementById('restaurants')
-					div.innerHTML = ''
-					console.log(res.data[0])
-
-					let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
-					let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
-					let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
-					let diff = this.findDiff(res.data[0].checkins, 'checkins');
-					let ratingDiff = this.findDiff(res.data[0].rating_count, 'rating_count');
-					let reviewDiff = this.findDiff(res.data[0].reviews, 'review_count');
-					let totalAvg = this.findTotalStats(this.state.restaurantInfo)
-
-					this.setState({
-						restaurantDetails: res.data[0],
-						details: true,
-						checkinsAvg: checkinsAvg,
-						reviewsAvg: reviewsAvg,
-						ratingsAvg: ratingsAvg,
-						diffArr: diff,
-						ratingDiff: ratingDiff,
-						reviewDiff: reviewDiff,
-						totalAvg: totalAvg
-					})
-					console.log(this.state)
-          this.generateChartData(this.state.diffArr)
+						console.log(res.data)
+						res.data.forEach(item => {
+							var index = arrFirms.findIndex(x => x.name === item.name)
+	
+							if (index === -1) {
+								arrFirms.push(item)
+							}	else {
+								console.log('no push')
+							}
+						})
+	
+						categoryTotal = this.findTotalStats(arrFirms)
+						this.setState({
+							priceTotal: priceTotal,
+							allTotal: allTotal,
+							categoryTotal: categoryTotal
+						})
 				})
 				.catch(err => console.log(err))
-		};
-
-		findDiff = (arr, name) => {
-			// returns an arry of obj with date and count
-			const values = []
-			for (var i = 0; i < arr.length; i++) {
-				values.push({
-					count: arr[i][name],
-					query_date: arr[i]['query_date']
-				})
-			}
-
-			const diff = []
-			for (var i = 0; i < values.length - 1; i++) {
-				let difference = values[i+1]['count'] - values[i]['count']
-				let percentChange = Mathy.roundValue(difference / values[i]['count'])
-				let query_date = values[i+1]['query_date']
-				diff.push({
-					difference: difference,
-					percentChange: percentChange,
-					query_date: query_date
-				})
-			}		
-			return diff
-		};
-
-		findDifference = (arr, name) => {
-			const values = []
-			for (var i = 0; i < arr.length; i++) {
-				values.push(arr[i][name])
-			}
-			const diff = []
-			for (var i = 0; i < values.length - 1; i++) {
-				let difference = values[i+1] - values[i]
-				diff.push(difference)
-			}
-			let mean = Mathy.getMean(diff)
-			return Mathy.roundValue(mean)
-		};
-
-		findTotalStats = (arr) => {
-			var checkins = [];
-			var ratings = [];
-			var reviews = [];
-			const obj = {}
-			for (var i = 0; i < arr.length; i++) {
-				checkins.push(this.findDifference(arr[i].checkins, 'checkins'))
-				ratings.push(this.findDifference(arr[i].rating_count, 'rating_count'))
-				reviews.push(this.findDifference(arr[i].reviews, 'review_count'))
-			}
-
-			checkins = numjs.array(checkins);
-			ratings = numjs.array(ratings);
-			reviews = numjs.array(reviews);
-
-			const checkinsMean = Mathy.roundValue(checkins.mean(), -2)
-			const ratingsMean = Mathy.roundValue(ratings.mean(), -2)
-			const reviewsMean = Mathy.roundValue(reviews.mean(), -2)
-
-			obj.checkinsMean = checkinsMean
-			obj.ratingsMean = ratingsMean
-			obj.reviewsMean = reviewsMean
-
-			return obj;
-		};
-
-		loadFilter = (ev) => {
-			console.log(ev.target.value)
-
-			if (ev.target.value === 'price') {
-				this.setState({
-					totalAvg: this.state.priceTotal
-				})
-				// let price = this.state.restaurantDetails.price
-				// console.log(price)
-				// API.filterSearch('price', price)
-				// 	.then(res => {
-				// 		console.log(res)
-
-				// 		let obj = this.findTotalStats(res.data)
-				// 		this.setState({
-				// 			totalAvg: obj
-				// 		})
-				// 		console.log(this.state)
-				// 		// call a function, it finds difference, then the average, inputs into obj and returns
-				// 	})
-				// 	.catch(err => console.log('ERROR: ',err))
-			} else if (ev.target.value === 'all') {
-				this.setState({
-					totalAvg: this.state.allTotal
-				})
-				// let obj = this.findTotalStats(this.state.restaurantInfo)
-				// this.setState({
-				// 	totalAvg: obj
-				// })
-			} else {
-				this.setState({
-					totalAvg: this.state.categoryTotal
-				})
-
-				// for loop through categories and push into array with each found results
-				// let categories = this.state.restaurantDetails.categories
-				// let arrFirms = []
-			
-				// categories.forEach(item => {
-
-				// 	API.filterSearch('category', item.title)
-				// 	.then(res => {
-				// 			console.log(res.data)
-				// 			res.data.forEach(item => {
-				// 				var index = arrFirms.findIndex(x => x.name === item.name)
-
-				// 				if (index === -1) {
-				// 					arrFirms.push(item)
-				// 				}	else {
-				// 					console.log('no push')
-				// 				}
-				// 			})
-
-				// 			let obj = this.findTotalStats(arrFirms)
-				// 			this.setState({
-				// 				totalAvg: obj
-				// 			})
-				// 	})
-				// 	.catch(err => console.log(err))
-				// })
-			}
-		};
-
-		getTotals = () => {
-			// gets price total then sends to getalltotal, then getscategoriestotal
-			API.filterSearch('price', this.state.restaurantDetails.price)
-			.then(res => {
-				console.log(res)
-				let priceTotal = this.findTotalStats(res.data)
-				getAllTotal(priceTotal, getCategoryTotal)
-				
 			})
-			.catch(err => console.log('ERROR: ',err))
-			
-			const getAllTotal = (priceTotal, callback) => {
-				let allTotal = this.findTotalStats(this.state.restaurantInfo)
-				callback(priceTotal, allTotal)
-			}
-			
-			const getCategoryTotal = (priceTotal, allTotal) => {
-				let categoryTotal;
-				let categories = this.state.restaurantDetails.categories
-				let arrFirms = []
-			
-				categories.forEach(item => {
-		
-					API.filterSearch('category', item.title)
-					.then(res => {
-							console.log(res.data)
-							res.data.forEach(item => {
-								var index = arrFirms.findIndex(x => x.name === item.name)
-		
-								if (index === -1) {
-									arrFirms.push(item)
-								}	else {
-									console.log('no push')
-								}
-							})
-		
-							categoryTotal = this.findTotalStats(arrFirms)
-							this.setState({
-								priceTotal: priceTotal,
-								allTotal: allTotal,
-								categoryTotal: categoryTotal
-							})
-					})
-					.catch(err => console.log(err))
-				})
-			}
 		}
 	};
 
@@ -372,13 +309,13 @@ class findRestaurant extends Component {
         this.setState({ showsidenav: !this.state.showsidenav });
     };
 
-    showline = () => {
-        this.setState({ showline: !this.state.showline });
-    };
+	showline = () => {
+			this.setState({ showline: !this.state.showline });
+	};
 
-    showbar = () => {
-        this.setState({ showbar: !this.state.showbar });
-    };
+	showbar = () => {
+			this.setState({ showbar: !this.state.showbar });
+	};
 
 	render() {
 
@@ -409,51 +346,50 @@ class findRestaurant extends Component {
 		      			<div className='columns'>
 		      				<div className="column is-12">
 		      					<h1> Find A Restaurant </h1>
-		      				<form>
-							    <Input
-							        value={this.state.restaurantName}
-							        onChange={this.handleInputChange}
-							        name="restaurantName"
-							        placeholder="restaurant"
-							    />
-							    <Searchbtn
-							        disabled={!(this.state.restaurantName)}
-							        onClick={this.searchRestaurant}
-							    >
-							       Search Restaurant
-							    </Searchbtn>	
-							   
-							    <div id='search-restaurant'>
-							      	{this.state.searchedRestaurant.length ? (
-							      		<CSSTransitionGroup
-											transitionName="example"
-											transitionAppear={true}
-											transitionAppearTimeout={500}
-											transitionEnter={false}
-											transitionLeave={true}>
-								        	<Searched>
-								          	{this.state.searchedRestaurant.map(restaurant => (
-									            <Searcheditems className='searcheditems' key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-									            	value={restaurant._id}
-									            >              
-																<p> Name of Restaurant: {restaurant.name} </p>
-																<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-																<p> Data Summary: 
-																	<ul>
-																		<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-																		<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
-																	</ul>
-																</p>
-									            </Searcheditems>
-									          	))}
-								       		</Searched>
-							       		</CSSTransitionGroup>
-										) : (
-										<h3>No Results to Display</h3>
-										)}		
-							    </div> 		    
-						    </form>
-
+										<form>
+											<Input
+													value={this.state.restaurantName}
+													onChange={this.handleInputChange}
+													name="restaurantName"
+													placeholder="restaurant"
+											/>
+											<Searchbtn
+													disabled={!(this.state.restaurantName)}
+													onClick={this.searchRestaurant}
+											>
+												Search Restaurant
+											</Searchbtn>	
+										
+											<div id='search-restaurant'>
+													{this.state.searchedRestaurant.length ? (
+														<CSSTransitionGroup
+													transitionName="example"
+													transitionAppear={true}
+													transitionAppearTimeout={500}
+													transitionEnter={false}
+													transitionLeave={true}>
+															<Searched>
+																{this.state.searchedRestaurant.map(restaurant => (
+																	<Searcheditems className='searcheditems' key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
+																		value={restaurant._id}
+																	>              
+																		<p> Name of Restaurant: {restaurant.name} </p>
+																		<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
+																		<p> Data Summary: 
+																			<ul>
+																				<li>Yelp Rating: {restaurant.rating[0].rating} </li>
+																				<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+																			</ul>
+																		</p>
+																	</Searcheditems>
+																	))}
+															</Searched>
+														</CSSTransitionGroup>
+												) : (
+												<h3>No Results to Display</h3>
+												)}		
+											</div> 		    
+						    		</form>
 		      				</div>
 		      			</div>
 		      			<div className='columns'>
@@ -465,27 +401,32 @@ class findRestaurant extends Component {
 					      		<div className="data-navigation">
 					      			<p class='percentage'>+75% Increase</p>
 					      			<p class='percentage'>-30% Decrease</p>
-									{this.state.details ? (
-											<Details 
-												name={this.state.restaurantDetails.name}
-												checkins={this.state.restaurantDetails.checkins}
-												checkinsAvg={this.state.checkinsAvg}
-												ratingCountAvg={this.state.ratingsAvg}
-												reviewsAvg={this.state.reviewsAvg}
-												totals={this.state.totalAvg}
-												handleInputChange={this.handleInputChange}
-												loadFilter={this.loadFilter}
-                        getTotals={() => this.getTotals()}
-											/>
+											{this.state.details ? (
+												<Details 
+													name={this.state.restaurantDetails.name}
+													checkins={this.state.restaurantDetails.checkins}
+													checkinsAvg={this.state.checkinsAvg}
+													ratingCountAvg={this.state.ratingsAvg}
+													reviewsAvg={this.state.reviewsAvg}
+													totals={this.state.totalAvg}
+													handleInputChange={this.handleInputChange}
+													loadFilter={this.loadFilter}
+													getTotals={() => this.getTotals()}
+												/>
+												) : (
+												null
+											)}
+											{this.state.filteredRestaurants.length ? (
+												<h4> Something </h4>
+												// <FilterData />
 											) : (
-											null
-										)}
-										
-								</div>
-							</div>
-						</div>	
+												<h4> Nothing </h4>
+											)}
+										</div>
+									</div>
+								</div>	
+			    		</div>
 			    	</div>
-			    </div>
 
 		      	{/*<div id='restaurants'>
 			      	{this.state.restaurantInfo.length ? (
@@ -512,94 +453,8 @@ class findRestaurant extends Component {
 				</div>
 			
 		</div>
+	)
+};
+}
 
-		render() {
-
-			return (
-			<div>
-				<h1>
-					Find A Restaurant
-				</h1>
-		
-				<form>
-			<Input
-				value={this.state.restaurantName}
-				onChange={this.handleInputChange}
-				name="restaurantName"
-				placeholder="restaurant"
-			/>
-			<Searchbtn
-				disabled={!(this.state.restaurantName)}
-				onClick={this.handleFormSubmit}
-			>
-			Search Restaurant
-			</Searchbtn>
-			</form>
-
-		<button onClick={() => this.generateChartData(this.state.diffArr) }>
-					Get Chart Data
-				</button>
-
-		<Chart chartData={this.state.chartData} restaurantName={'Set this in props'} legendPosition="top"/>
-
-		<div id='restaurants'>
-			{this.state.restaurantInfo.length ? (
-				<Searched>
-				{this.state.restaurantInfo.map(restaurant => (
-					<Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-						value={restaurant._id}
-					>              
-									<p> Name of Restaurant: {restaurant.name} </p>
-									<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-									<p> Data Summary: 
-										<ul>
-											<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-											<li>Yelp URL: {restaurant.yelpURL} </li>
-										</ul>
-									</p>
-					</Searcheditems>
-				))}
-				</Searched>
-			) : (
-				<h3>No Results to Display</h3>
-			)}
-			{this.state.details ? (
-				<Details 
-					name={this.state.restaurantDetails.name}
-					checkins={this.state.restaurantDetails.checkins}
-					checkinsAvg={this.state.checkinsAvg}
-					ratingCountAvg={this.state.ratingsAvg}
-					reviewsAvg={this.state.reviewsAvg}
-					totals={this.state.totalAvg}
-					handleInputChange={this.handleInputChange}
-					loadFilter={this.loadFilter}
-					getTotals={() => this.getTotals()}
-				/>
-				) : (
-				null
-				)}
-					{this.state.filteredRestaurants.length ? (
-						<h4> Something </h4>
-						// <FilterData />
-					) : (
-						<h4> Nothing </h4>
-					)}
-			</div>
-
-				<button onClick={this.loadRestaurants}>
-					load restaurants
-				</button>
-
-				<button onClick={() => this.getAPIData()}>
-					button
-				</button>
-				<button onClick={this.yelppy}>
-					Yelp Button
-				</button>
-			</div>
-
-			)
-		}
-	}
-
-	export default findRestaurant;
+export default findRestaurant;

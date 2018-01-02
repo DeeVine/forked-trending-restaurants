@@ -3,11 +3,13 @@ import React, {Component} from 'react';
 export class Details extends Component {
 	constructor(props) {
 		super(props)
-	}
+	};
+
 	componentDidMount() {
 		const getTotals = this.props.getTotals;
 		getTotals()
-	}
+	};
+
 	render() {
 		return (
 	
@@ -18,7 +20,7 @@ export class Details extends Component {
 		{this.props.checkins.map(item => (
 
 			<p>{item.checkins}</p>
-		))*/}
+		))}
 		<h3>
 			Avg Checkins </h3>
 		<p>{this.props.checkinsAvg}</p>
