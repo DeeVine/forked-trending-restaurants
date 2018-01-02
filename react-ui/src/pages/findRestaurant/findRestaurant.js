@@ -10,7 +10,7 @@ import "./findRestaurant.css";
 import numjs from 'numjs';
 import Mathy from "../../utils/Mathy.js";
 import { CSSTransitionGroup } from 'react-transition-group' // ES6
-
+import moment from 'moment';
 
 //Need to pass value from input field
 //Style chart and info into one element
@@ -299,18 +299,82 @@ class findRestaurant extends Component {
 				.catch(err => console.log(err))
 			})
 		}
+
+		// const convertToDay = (arr) => {
+		// 	arr.forEach(item => {
+		// 		var day = item.checkins[0].query_date.getUTCDay();
+		// 		console.log(day)
+		// 	})
+		// }
 		// finds the total avg for each day for detail and for all in filter
+		//
 		const eachDayTotal = (priceTotal, allTotal, categoryTotal, priceData, categoryData) => {
 			const oneDetailData = this.state.restaurantInfo;
-			priceData.forEach(item => {
-				var index = item.checkins.filter(x => x.date === item.date)
-			
-				console.log(index)
+			const dataArray = [priceData, categoryData, oneDetailData]
+			const arrayDates = {
+				priceData: [],
+				categoryData: [],
+				oneDetailData: []
+			}
+			console.log(priceData[0].checkins[0].query_date)
+			console.log(moment(priceData[0].checkins[0].query_date).weekday())
+			var allArray = [];
+			// goes through each type of filter data collection
+			// 
+			dataArray.forEach((element, i) => {
+				console.log('element: ', element)
+				element.forEach(item => {
+					item.checkins.forEach(each => {
+						var index = element.findIndex(x => x.query_date === each.query_date)
+	
+						if (index === -1) {
+							switch(i) {
+								case 0:
+								arrayDates['priceData'].push(each)
+								break;
+								case 1:
+								arrayDates['categoryData'].push(each)
+								break;
+								case 2:
+								arrayDates['oneDetailData'].push(each)
+								break;
+							}
+						}	else {
+							console.log('no push')
+						}
+					})
+	
+				})
 			})
+
+			// have array of unique dates
+			console.log(arrayDates)
+			// match unique date array with each in priceData to push into new array
+			// arrayDates.forEach(item => {
+			// 	priceData.forEach(each => {
+			// 		let date = item.query_date;
+
+			// 		var index = each.checkins.filter(x => x.query_date === date)
+			// 		allArray.push(index)
+			// 	})
+			// })
+			// const flatten = (arr) => arr.reduce((flat,next) => flat.concat(next), [])
+			// // produces array of objects with all dates, organized.
+			// console.log(flatten(allArray))
+			// seperates into 7 different arrays, Mon-Sun
 			this.setState({
 				priceTotal: priceTotal,
 				allTotal: allTotal,
-				categoryTotal: categoryTotal
+				categoryTotal: categoryTotal,
+				dailyCheckinsPrice: {},
+				dailyCheckinsAll: {},
+				dailyCheckinsCategory: {},
+				dailyRatingsPrice: {},
+				dailyRatingsAll: {},
+				dailyRatingsCategory: {},
+				dailyReviewsPrice: {},
+				dailyReviewsAll: {},
+				dailyReviewsCategory: {},
 			})
 		}
 	};
