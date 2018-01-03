@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
 const mlab = "mongodb://admin:bootcamp123@ds159776.mlab.com:59776/heroku_vg8qr96g"
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/trendingreviewapp";
+const local = "mongodb://localhost/trendingreviewapp";
+var MONGODB_URI = process.env.MONGODB_URI || mlab;
 mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
