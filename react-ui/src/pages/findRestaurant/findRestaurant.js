@@ -213,13 +213,17 @@ class findRestaurant extends Component {
 			obj.diff = diff
 			allDifferences.push(obj)
 		})
+		console.log(allDifferences)
+
 		const compareAll = []
 		// find difference week over week
 		allDifferences.map(item => {
+			//object to hold yelpId and weeklyChange
 			let compare = {}
 			let percentChange1 = 0
 			let percentChange2 = 0
-			let totalChange = 0
+			let weeklyChange = 0
+			let weeklyChangePercent = 0
 			//first week
 			item.diff.slice(0, 3).map(item => {
 				percentChange1 += item.percentChange
@@ -230,9 +234,10 @@ class findRestaurant extends Component {
 				percentChange2 += item.percentChange
 				// console.log(item.percentChange)
 			})
-			totalChange = percentChange2 - percentChange1
+			weeklyChange = percentChange2 - percentChange1
 			compare.yelpId = item.yelpId
-			compare.totalChange = totalChange
+			compare.weeklyChange = weeklyChange
+			compare.weeklyChangePercent = weeklyChange/percentChange1
 			compareAll.push(compare)
 		})
 		console.log(compareAll)
