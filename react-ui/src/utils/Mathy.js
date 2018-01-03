@@ -29,7 +29,7 @@ export default {
     }
     // If the value is negative...
     if (value < 0) {
-      return -this(-value, exp);
+      return -this.roundValue(-value, exp);
     }
     // Shift
     value = value.toString().split('e');
