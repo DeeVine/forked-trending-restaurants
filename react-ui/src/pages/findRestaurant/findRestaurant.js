@@ -87,12 +87,38 @@ class findRestaurant extends Component {
             var b = Math.floor(Math.random() * 255);
             return "rgba(" + r + "," + g + "," + b + ", 0.2)";
         };
+
+        let datalabel = '';
+
+    	let index = this.state.chartData.datasets.findIndex( x => x.label === this.state.restaurantDetails.name)
+
+    	if (index === -1) {
+    		datalabel = this.state.restaurantDetails.name
+    		console.log('doesn\'t exist, push label as is: ' + datalabel);
+    	}
+    	else {
+    		datalabel = this.state.restaurantDetails.name + '1'
+    		console.log('datalabel: ' + datalabel)
+    	}
+
+    	const labelArray = this.state.chartData.datasets.map(index => {
+    		return index.label;
+    	})
+
+    	console.log(labelArray);
+
+    	let numberoftimes = labelArray.filter(word => word === this.state.restaurantDetails.name+"1")
+
+    	console.log("/"+this.state.restaurantDetails.name+"/");
+
+    	console.log(numberoftimes);
+
 		this.setState({
 			chartData: {
 				labels: labels,
 				datasets: this.state.chartData.datasets.concat([
 					{
-						label: this.state.restaurantDetails.name,
+						label: datalabel,
 						data: data,
 						backgroundColor: [dynamicColors()]
 					}
@@ -175,20 +201,57 @@ class findRestaurant extends Component {
 			.catch(err => console.log(err))
 	};
 
+	//create an array with differences for all restaurants in restaurantInfo
+	findPercentChange = () => {
+		//array to hold the daily increase in ratings, reviews, checkins
+		const allDifferences = []
+
+		this.state.restaurantInfo.map(item => {
+			let obj = {}
+			let diff = this.findDiff(item.checkins, 'checkins')
+			obj.yelpId = item.yelpId
+			obj.diff = diff
+			allDifferences.push(obj)
+		})
+		const compareAll = []
+		// find difference week over week
+		allDifferences.map(item => {
+			let compare = {}
+			let percentChange1 = 0
+			let percentChange2 = 0
+			let totalChange = 0
+			//first week
+			item.diff.slice(0, 3).map(item => {
+				percentChange1 += item.percentChange
+				// console.log(item.percentChange)
+			})
+			//second week
+			item.diff.slice(3, 6).map(item => {
+				percentChange2 += item.percentChange
+				// console.log(item.percentChange)
+			})
+			totalChange = percentChange2 - percentChange1
+			compare.yelpId = item.yelpId
+			compare.totalChange = totalChange
+			compareAll.push(compare)
+		})
+		console.log(compareAll)
+	}
+
 	findDiff = (arr, name) => {
 		// returns an arry of obj with date and count
 		const values = []
 		for (var i = 0; i < arr.length; i++) {
 			values.push({
 				count: arr[i][name],
-				query_date: arr[i]['query_date']
+				query_date: arr[i]['query_date'],
 			})
 		}
 
 		const diff = []
 		for (var i = 0; i < values.length - 1; i++) {
 			let difference = values[i+1]['count'] - values[i]['count']
-			let percentChange = Mathy.roundValue(difference / values[i]['count'])
+			let percentChange = Mathy.roundValue(difference / values[i]['count'], -5)
 			let query_date = values[i+1]['query_date']
 			diff.push({
 				difference: difference,
@@ -228,9 +291,9 @@ class findRestaurant extends Component {
 		ratings = numjs.array(ratings);
 		reviews = numjs.array(reviews);
 
-		const checkinsMean = Mathy.roundValue(checkins.mean(), -2)
-		const ratingsMean = Mathy.roundValue(ratings.mean(), -2)
-		const reviewsMean = Mathy.roundValue(reviews.mean(), -2)
+		const checkinsMean = Mathy.roundValue(checkins.mean(), -6)
+		const ratingsMean = Mathy.roundValue(ratings.mean(), -6)
+		const reviewsMean = Mathy.roundValue(reviews.mean(), -6)
 
 		obj.checkinsMean = checkinsMean
 		obj.ratingsMean = ratingsMean
@@ -326,6 +389,8 @@ class findRestaurant extends Component {
 				<button onClick={this.onClick}>showsidenav true</button> 
 				<button onClick={this.showline}>showline</button> 
 				<button onClick={this.showbar}>showbar</button> 
+				<button onClick={this.findPercentChange}>finddiffall</button> 
+
 
 		      	<div className="data-section columns">
 
