@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Input, Form, Searchbtn } from "../../components/Form";
-import { Searched, Searcheditems } from "../../components/Searched";
+import { Searched, Searcheditems, FbSearchedItems } from "../../components/Searched";
 import Chart from "../../components/Chart";
 import Sidenav from "../../components/Sidenav";
 import API from "../../utils/API.js";
@@ -10,7 +10,7 @@ import "./findRestaurant.css";
 import numjs from 'numjs';
 import Mathy from "../../utils/Mathy.js";
 import { CSSTransitionGroup } from 'react-transition-group' // ES6
-
+import moment from 'moment';
 
 //Need to pass value from input field
 //Style chart and info into one element
@@ -29,6 +29,7 @@ class findRestaurant extends Component {
 			restaurantId: "",
 			filter: 'price',
 			filteredRestaurants: '',
+			fbAPIResults: {},
 			details: false,
 			filteredTotal: "",
 			allTotal: "",
@@ -64,7 +65,7 @@ class findRestaurant extends Component {
 			})
 		})
 		.catch(err => console.log(err));
-	}      
+	}
 
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
@@ -156,18 +157,52 @@ class findRestaurant extends Component {
 	searchRestaurant = event => {
 		event.preventDefault();
 		if (this.state.restaurantName) {
-			API.nameQuery(this.state.restaurantName)
-			.then(res => {
-				this.setState({
-					searchedRestaurant: res.data
+			const nameQue = (data) => {
+				API.nameQuery(this.state.restaurantName)
+				.then(res => {
+					// if no result found, start add new firm functions
+					// indexof, if data matches res.data, then take out
+					let fbResults = []
+					if (res.data[0]) {
+						data.forEach(item => {
+
+							if (item.id !== res.data[0].fbId) {
+								fbResults.push(item)
+							}
+						})
+					} else {
+						fbResults = data
+					}
+					this.setState({
+						fbAPIResults: fbResults,
+						searchedRestaurant: res.data,
+					})
+					console.log(this.state);
+					// this.generateChartData(this.state.restaurantInfo)
 				})
-				console.log(res);
-				console.log(this.state);
-				// this.generateChartData(this.state.restaurantInfo)
-			})
-			.catch(err => console.log(err));
+				.catch(err => console.log(err));
+			}
+
+			// searches through fb api before sending it through db api
+			const access = 'EAAG0XCqokvMBAPYkq18AYZCRVI1QaWb9HU9ti4PpFL5lZAL32p53Ql1zREzbBi9ikoXwdwgsyZB6Cjv9YjghpfQmWPZCBBtWMnGaqknAecNhQzpBNWKCZCFYM36P0IRP8QSnOlzHdxod6y8mZA3cOpdxlu7XZAtqIv9AhZBXdPyPsAZDZD'
+			let url = 'https://graph.facebook.com/v2.7/search'
+			let params = {
+				type: 'place',
+				q: this.state.restaurantName,
+				center: '37.8044,-122.2711',
+				distance: 10000,
+				limit: 100,
+				fields: 'name,single_line_address,phone',
+				access_token: access
+			}
+			API.APIsearch(url, params)
+				.then(res => {
+					nameQue(res.data.data)
+				})
+				.catch(err => console.log(err))
+
 		}
-  }
+  };
 
 	showDetails = event => {
 		const array = []
@@ -256,7 +291,10 @@ class findRestaurant extends Component {
 		const diff = []
 		for (var i = 0; i < values.length - 1; i++) {
 			let difference = values[i+1]['count'] - values[i]['count']
-			let percentChange = Mathy.roundValue(difference / values[i]['count'], -5)
+
+			let val = difference / values[i]['count']
+			let percentChange = Mathy.roundValue(val, -5)
+
 			let query_date = values[i+1]['query_date']
 			diff.push({
 				difference: difference,
@@ -278,7 +316,7 @@ class findRestaurant extends Component {
 			diff.push(difference)
 		}
 		let mean = Mathy.getMean(diff)
-		return Mathy.roundValue(mean)
+		return Mathy.roundValue(mean, -2)
 	};
 
 	findTotalStats = (arr) => {
@@ -329,19 +367,19 @@ class findRestaurant extends Component {
 		// gets price total then sends to getalltotal, then getscategoriestotal
 		API.filterSearch('price', this.state.restaurantDetails.price)
 		.then(res => {
-			console.log(res)
-			let priceTotal = this.findTotalStats(res.data)
-			getAllTotal(priceTotal, getCategoryTotal)
+			const priceData = res.data
+			let priceTotal = this.findTotalStats(priceData)
+			getAllTotal(priceTotal, getCategoryTotal, priceData)
 			
 		})
 		.catch(err => console.log('ERROR: ',err))
 		
-		const getAllTotal = (priceTotal, callback) => {
-			let allTotal = this.findTotalStats(this.state.restaurantInfo)
-			callback(priceTotal, allTotal)
+		const getAllTotal = (priceTotal, getCategoryTotal, priceData) => {
+			const allTotal = this.findTotalStats(this.state.restaurantInfo)
+			getCategoryTotal(priceTotal, allTotal, priceData)
 		}
 		
-		const getCategoryTotal = (priceTotal, allTotal) => {
+		const getCategoryTotal = (priceTotal, allTotal, priceData, eachDayTotal) => {
 			let categoryTotal;
 			let categories = this.state.restaurantDetails.categories
 			let arrFirms = []
@@ -350,8 +388,8 @@ class findRestaurant extends Component {
 	
 				API.filterSearch('category', item.title)
 				.then(res => {
-						console.log(res.data)
-						res.data.forEach(item => {
+						const categoryData = res.data
+						categoryData.forEach(item => {
 							var index = arrFirms.findIndex(x => x.name === item.name)
 	
 							if (index === -1) {
@@ -360,13 +398,9 @@ class findRestaurant extends Component {
 								console.log('no push')
 							}
 						})
-	
 						categoryTotal = this.findTotalStats(arrFirms)
-						this.setState({
-							priceTotal: priceTotal,
-							allTotal: allTotal,
-							categoryTotal: categoryTotal
-						})
+						eachDayTotal(priceTotal, allTotal,categoryTotal, priceData, categoryData)
+
 				})
 				.catch(err => console.log(err))
 			})
@@ -385,6 +419,11 @@ class findRestaurant extends Component {
 			this.setState({ showbar: !this.state.showbar });
 	};
 
+	getYelpAddToDb = (ev) => {
+		console.log('getYelpAddToDb')
+		console.log(ev.currentTarget.getAttribute('value'))
+
+	}
 	render() {
 
 		return (
@@ -457,7 +496,31 @@ class findRestaurant extends Component {
 														</CSSTransitionGroup>
 												) : (
 												<h3>No Results to Display</h3>
-												)}		
+												)}
+												<h4> FB API Search results </h4>
+												{this.state.fbAPIResults.length ? (
+													<CSSTransitionGroup
+														transitionName="example"
+														transitionAppear={true}
+														transitionAppearTimeout={500}
+														transitionEnter={false}
+														transitionLeave={true}
+													>
+														<Searched>
+															{this.state.fbAPIResults.map(restaurant => (
+																<FbSearchedItems className='searcheditems' key={restaurant.id} getYelpAddToDb={(ev) => this.getYelpAddToDb(ev)}
+																	value={restaurant.id}
+																>
+																	<p> Name of Restaurant: {restaurant.name} </p>
+																	<p> Address: {restaurant.single_line_address} </p>
+																	<p> Phone: {restaurant.phone} </p>
+																</FbSearchedItems>
+															))}
+														</Searched>
+													</CSSTransitionGroup>
+												) : (
+													<h4>No results from Facebook API </h4>
+												)}
 											</div> 		    
 						    		</form>
 		      				</div>

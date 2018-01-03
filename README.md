@@ -1,5 +1,3 @@
-# nytreact
-nytimes scraper app built with Node/Express/MongoDB/ReactJS
 
 - [ ] testing
 
@@ -53,7 +51,6 @@ raw % change per week
     set min amount of reviews/checks/ratings, 40/50,
 
 
-
 todo:
     find out whats trending based on raw % change with min amount required to qualify
         % change delta per week
@@ -80,5 +77,3 @@ todo:
     
     extra: check if rating changes
                     google API
-
-
