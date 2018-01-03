@@ -2,7 +2,8 @@ const router = require("express").Router();
 const restaurantController = require("../../controllers/restaurantController.js");
 
 router.route("/")
-	.get(restaurantController.findAll);
+	.get(restaurantController.findAll)
+	.post(restaurantController.postNewRestaurant);
 
 router.route("/:name")
 	.get(restaurantController.nameQuery);

@@ -62,6 +62,14 @@ module.exports = {
 				.catch(err => res.status(422).json(err));
 		}
 
+	},
+
+	postNewRestaurant: function(req, res) {
+		console.log(req.body)
+		db.Ids
+			.create(req.body)
+			.then(dbModel => res.json(dbModel))
+			.catch(err => res.status(422).json(err))
 	}
 
 // find by filter

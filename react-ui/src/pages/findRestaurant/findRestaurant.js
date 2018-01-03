@@ -9,6 +9,7 @@ import FilterData from "../../components/FilterData"
 import "./findRestaurant.css";
 import numjs from 'numjs';
 import Mathy from "../../utils/Mathy.js";
+import Yelp from "../../utils/Yelp.js";
 import { CSSTransitionGroup } from 'react-transition-group' // ES6
 import moment from 'moment';
 
@@ -163,6 +164,7 @@ class findRestaurant extends Component {
 					// if no result found, start add new firm functions
 					// indexof, if data matches res.data, then take out
 					let fbResults = []
+					console.log(res)
 					if (res.data[0]) {
 						data.forEach(item => {
 
@@ -192,11 +194,12 @@ class findRestaurant extends Component {
 				center: '37.8044,-122.2711',
 				distance: 10000,
 				limit: 100,
-				fields: 'name,single_line_address,phone',
+				fields: 'name,single_line_address,phone, location,is_permanently_closed',
 				access_token: access
 			}
 			API.APIsearch(url, params)
 				.then(res => {
+					console.log(res)
 					nameQue(res.data.data)
 				})
 				.catch(err => console.log(err))
@@ -399,17 +402,20 @@ class findRestaurant extends Component {
 							}
 						})
 						categoryTotal = this.findTotalStats(arrFirms)
-						eachDayTotal(priceTotal, allTotal,categoryTotal, priceData, categoryData)
-
-				})
+						this.setState({
+							priceTotal: priceTotal,
+							allTotal: allTotal,
+							categoryTotal: categoryTotal
+							})
 				.catch(err => console.log(err))
+				})
 			})
 		}
 	};
 
 	onClick = () => {
-        this.setState({ showsidenav: !this.state.showsidenav });
-    };
+    this.setState({ showsidenav: !this.state.showsidenav });
+   };
 
 	showline = () => {
 			this.setState({ showline: !this.state.showline });
@@ -421,9 +427,22 @@ class findRestaurant extends Component {
 
 	getYelpAddToDb = (ev) => {
 		console.log('getYelpAddToDb')
-		console.log(ev.currentTarget.getAttribute('value'))
+		const id = ev.currentTarget.getAttribute('value')
+		const name = ev.currentTarget.getAttribute('data-name')
+		const city = ev.currentTarget.getAttribute('data-city')
+		const address = ev.currentTarget.getAttribute('data-address')
+		let phone
+		if (ev.currentTarget.getAttribute('data-phone')) {
+			phone = ev.currentTarget.getAttribute('data-phone')
+			phone = Yelp.convertPhone(phone)
+		} else {
+			phone = null
+		}
+		
+		// console.log(phone)
+		Yelp.yelpAPI(id, name, address, phone, city)
+	};
 
-	}
 	render() {
 
 		return (
@@ -510,6 +529,10 @@ class findRestaurant extends Component {
 															{this.state.fbAPIResults.map(restaurant => (
 																<FbSearchedItems className='searcheditems' key={restaurant.id} getYelpAddToDb={(ev) => this.getYelpAddToDb(ev)}
 																	value={restaurant.id}
+																	dataName={restaurant.name}
+																	dataAddress={restaurant.location.street}
+																	dataCity={restaurant.location.city}
+																	dataPhone={restaurant.phone}
 																>
 																	<p> Name of Restaurant: {restaurant.name} </p>
 																	<p> Address: {restaurant.single_line_address} </p>
