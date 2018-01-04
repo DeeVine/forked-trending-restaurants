@@ -14,7 +14,10 @@ module.exports = {
 	nameQuery: function(req, res) {
     	db.Restaurants
 			.find({ 
-				name: req.params.name
+				name: { 
+					$regex: req.params.name + '.*',
+					$options: 'i'
+				}
 			})
 			.sort({ date: -1 })
 			.then(dbModel =>{
@@ -42,7 +45,6 @@ module.exports = {
 				})
 				.then(dbModel => {
 					res.json(dbModel)
-					console.log(res)
 				})
 				.catch(err => res.status(422).json(err));
 		} else if (req.params.type === 'category') {
@@ -60,6 +62,14 @@ module.exports = {
 				.catch(err => res.status(422).json(err));
 		}
 
+	},
+
+	postNewRestaurant: function(req, res) {
+		console.log(req.body)
+		db.Ids
+			.create(req.body)
+			.then(dbModel => res.json(dbModel))
+			.catch(err => res.status(422).json(err))
 	}
 
 // find by filter

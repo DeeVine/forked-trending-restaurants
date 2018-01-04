@@ -107,7 +107,7 @@ class App extends React.Component {
 	      <Sidebar {...sidebarProps}>
 	        <MaterialTitlePanel title={contentHeader}>
 	          	<div style={styles.content}>
-	            	<Route exact path="/" component={Home} />
+	            	<Route exact path="/Home" component={Home} />
 			        <Route exact path="/Login" component={Login} />
 			        <Route exact path="/findRestaurant" component={findRestaurant} />
 	          </div>

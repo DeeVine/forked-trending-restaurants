@@ -200,3 +200,111 @@
       .catch(err => console.log(err))
 	}
 	};
+
+
+
+
+	// to find daily averages based on filter
+			const eachDayTotal = (priceTotal, allTotal, categoryTotal, priceData, categoryData) => {
+			const oneDetailData = this.state.restaurantInfo;
+			const dataArray = [priceData, categoryData, oneDetailData]
+			const arrayDates = {
+				priceData: [],
+				categoryData: [],
+				oneDetailData: []
+			}
+			// goes through each type of filter data collection
+			
+			const getDailyObjectData = (filter, data) => {
+				const compiledData = {
+					checkins: [],
+					reviews: [],
+					rating_count: []
+				}
+				data.forEach(item => {
+					item.checkins.forEach(each => {
+						// converts each date into a weekday(numerical value)
+						each.query_date = moment(each.query_date).weekday()
+						compiledData.checkins.push(each)
+						// var index = data.findIndex(x => x.query_date === each.query_date)
+						// if (index === -1) {
+						// }
+					})
+					item.reviews.forEach(each => {
+						each.query_date = moment(each.query_date).weekday()
+						compiledData.reviews.push(each)
+					})
+					item.rating_count.forEach(each => {
+						each.query_date = moment(each.query_date).weekday()
+						compiledData.rating_count.push(each)
+					})
+				})
+				console.log(compiledData)
+				var daysNumber = [0,1,2,3,4,5,6];
+				
+				// match unique date array with each in priceData to push into new array
+				const days = {
+					mon: [],
+					tues: [],
+					wed: [],
+					thurs: [],
+					fri: [],
+					sat: [],
+					sun: []
+				}
+				compiledData.checkins.forEach(item => {
+					var index = daysNumber.filter(x => x === item.query_date)
+
+					switch(index[0]) {
+						case 1:
+							days.mon.push(item)
+							break;
+						case 2:
+							days.tues.push(item)
+							break;
+						case 3:
+							days.wed.push(item)
+							break;
+						case 4:
+							days.thurs.push(item)
+							break;
+						case 5:
+							days.fri.push(item)
+							break;
+						case 6:
+							days.sat.push(item)
+							break;
+						case 0:
+							days.sun.push(item)
+							break;
+					}
+				})
+				compiledData.checkins = days
+				console.log(compiledData)
+			}
+			const dailyPriceFilter = getDailyObjectData('price', priceData)
+			// const flatten = (arr) => arr.reduce((flat,next) => flat.concat(next), [])
+			// produces array of objects with all dates, organized.
+			// console.log(flatten(allArray))
+			// seperates into 7 different arrays, Mon-Sun
+			this.setState({
+				priceTotal: priceTotal,
+				allTotal: allTotal,
+				categoryTotal: categoryTotal,
+				dailyPriceFilter: {
+					checkins: {},
+					rating_count: {},
+					reviews: {}
+				},
+				dailyAllFilter: {
+					checkins: {},
+					rating_count: {},
+					reviews: {}
+				},
+				dailyCategoryFilter: {
+					checkins: {},
+					rating_count: {},
+					reviews: {}
+				}
+			})
+		}

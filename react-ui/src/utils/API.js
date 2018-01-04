@@ -12,6 +12,10 @@ export default {
     return axios.get("api/restaurants");
   },
 
+  postNewRestaurant: function(data) {
+    return axios.post('api/restaurants/', data)
+  },
+
   filterSearch: function(type, filter) {
     return axios.get('api/restaurants/filter/' + type +'?filter=' + filter)
   },

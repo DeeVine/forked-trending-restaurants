@@ -34,7 +34,7 @@ const SidebarContent = (props) => {
   return (
     <MaterialTitlePanel title="Menu" style={style}>
       <div style={styles.content}>
-        <a href="index.html" style={styles.sidebarLink}>Home</a>
+        <a href="/Home" style={styles.sidebarLink}>Home</a>
         <a href="/findRestaurant" style={styles.sidebarLink}>Find A Restaurant</a>
         <div style={styles.divider} />
         {links}
