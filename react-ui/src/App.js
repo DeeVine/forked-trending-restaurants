@@ -18,12 +18,11 @@ const styles = {
   },
   content: {
     padding: '16px',
-    marginbottom: '60px',
   },
   logo: {
   	width: '50%',
-  	textAlign: 'center',
-  	margin: 'auto',
+  	display: 'block',
+    margin: '0 auto',
   }
 };
 
@@ -107,7 +106,7 @@ class App extends React.Component {
     };
 
     return (
-   	<div>
+      <div>
 	   	<Router>
 	      <Sidebar {...sidebarProps}>
 	        <MaterialTitlePanel title={contentHeader}>
@@ -115,12 +114,16 @@ class App extends React.Component {
                 <Route exact path="/Home" component={Home} />
                 <Route exact path="/Login" component={Login} />
   			        <Route exact path="/findRestaurant" component={findRestaurant} />
+                          
 	          </div>
+                         
 	        </MaterialTitlePanel>
 	      </Sidebar>
 	    </Router>
-          		<Footer />
-    </div>
+      <div>
+           
+      </div>
+      </div>
     );
   }
 }

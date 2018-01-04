@@ -22,13 +22,8 @@ const styles = {
   content: {
     padding: '16px',
     height: '100%',
-    backgroundColor: '#423d3d',
+    backgroundColor: 'white',
   },
-  image:{
-    borderRadius: '50%',
-    marginTop: '10px',
-    marginBottom: '10px',
-  }
 };
 
 const SidebarContent = (props) => {
