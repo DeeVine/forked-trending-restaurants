@@ -60,19 +60,21 @@ todo:
     maybe: add lat lng to each doc
     
     geolocate trending in area
-
+    
+    Issue: if no facebook page but have yelp page
 
     user auth
     setting user database
     saving restaurants
 
-    adding a new restaurant
+    adding a new restaurant - Done
 
     data visualizing:
         on graphs: raw change and % change
         on text: % change
         on backend: showing top trending via % change
     
+
     clean up code!!!
     
     extra: check if rating changes
