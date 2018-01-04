@@ -467,10 +467,16 @@ class findRestaurant extends Component {
 				coordinates: coords
 			})
 		})
+		// sort by distance
 		newArr.sort((a,b) => {
 			return a.distance - b.distance
 		})
+
+		// take closest 30 and sort by highest score
 		console.log('SORTED: ', newArr)
+
+		// seperate top 30 and display to html
+		// use first 10 in array to show as closest
 		// console.log(geolib.getDistance(geo, compare))
 		// var coords = Geo.geoCodeByAddress(query)
 		// this.setState({
