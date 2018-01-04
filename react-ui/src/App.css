@@ -1,9 +1,8 @@
-html { 
-  height: 100%;
- }
- 
-body {
-	display: flex;
-	flex-direction: column;
-  height: 100vh;
+Footer{
+	position: absolute;
+	clear: both;
+	clear: fixed;
+	bottom: 0;
+	right: 0;
+
 }

@@ -53,8 +53,6 @@ class App extends React.Component {
   menuButtonClick(ev) {
     ev.preventDefault();
     this.onSetOpen(!this.state.docked);
-
-
   }
 
   renderPropCheckbox(prop) {
@@ -114,9 +112,9 @@ class App extends React.Component {
 	      <Sidebar {...sidebarProps}>
 	        <MaterialTitlePanel title={contentHeader}>
 	          	<div style={styles.content}>
-	            	<Route exact path="/Home" component={Home} />
-			        <Route exact path="/Login" component={Login} />
-			        <Route exact path="/findRestaurant" component={findRestaurant} />
+                <Route exact path="/Home" component={Home} />
+                <Route exact path="/Login" component={Login} />
+  			        <Route exact path="/findRestaurant" component={findRestaurant} />
 	          </div>
 	        </MaterialTitlePanel>
 	      </Sidebar>
