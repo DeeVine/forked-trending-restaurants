@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
+import logo from "./logo.png"
 import Home from "./pages/Home";
 import findRestaurant from "./pages/findRestaurant";
 import Login from "./pages/Login";
@@ -19,6 +20,11 @@ const styles = {
     padding: '16px',
     marginbottom: '60px',
   },
+  logo: {
+  	width: '50%',
+  	textAlign: 'center',
+  	margin: 'auto',
+  }
 };
 
 class App extends React.Component {
@@ -47,6 +53,7 @@ class App extends React.Component {
   menuButtonClick(ev) {
     ev.preventDefault();
     this.onSetOpen(!this.state.docked);
+
 
   }
 
@@ -84,7 +91,7 @@ class App extends React.Component {
       <span>
         {!this.state.open &&
          <a onClick={this.menuButtonClick} href="#" style={styles.contentHeaderMenuLink}>=</a>}
-        <span> Trending Restaurant</span>
+        <span> <img src={logo} className="logo_page" alt="logo_page" style={styles.logo}/> </span>
       </span>);
 
     const sidebarProps = {

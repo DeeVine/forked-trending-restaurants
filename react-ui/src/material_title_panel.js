@@ -5,9 +5,10 @@ const styles = {
   root: {
     fontFamily: '"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif',
     fontWeight: 300,
+    marginBottom: '30px',
   },
   header: {
-    backgroundColor: '#03a9f4',
+    backgroundColor: 'gray',
     color: 'white',
     padding: '16px',
     fontSize: '1.5em',
