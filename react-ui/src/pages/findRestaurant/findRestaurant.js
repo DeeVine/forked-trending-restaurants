@@ -13,6 +13,9 @@ import Yelp from "../../utils/Yelp.js";
 import { CSSTransitionGroup } from 'react-transition-group' // ES6
 import moment from 'moment';
 import geolib from 'geolib';
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import Map from "../../utils/Map.js";
+
 //Need to pass value from input field
 //Style chart and info into one element
 //Allow to click on element to view stats
@@ -53,8 +56,10 @@ class findRestaurant extends Component {
 			searchedRestaurant: {},
 			showsidenav: true,
 			showline: true,
-			showbar: true
+			showbar: true,
+			address: "",
 		};
+		this.onChange = (address) => this.setState({ address })
 	}
   
 	componentDidMount() {
@@ -77,6 +82,17 @@ class findRestaurant extends Component {
 		})
 		.catch(err => console.log(err));
 	}
+
+
+	//handle Submit for Geolocation
+
+	handleFormSubmit = (event) => {
+    event.preventDefault()
+
+    Map.geoCode(this.state.address)
+  	}
+
+
 
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
@@ -480,6 +496,11 @@ class findRestaurant extends Component {
 
 	render() {
 
+		const inputProps = {
+	      value: this.state.address,
+	      onChange: this.onChange,
+	    }
+
 		return (
 		<div>
 			<div className="wrapper">	
@@ -510,19 +531,20 @@ class findRestaurant extends Component {
 		      			<div className='columns'>
 		      				<div className="column is-12">
 		      					<h1> Find A Restaurant </h1>
-										<form>
-											<Input
+										<form onSubmit={this.handleFormSubmit}>
+											<PlacesAutocomplete
+													inputProps={inputProps}
 													value={this.state.restaurantName}
 													onChange={this.handleInputChange}
 													name="restaurantName"
 													placeholder="restaurant"
 											/>
-											<Searchbtn
+											<button type="submit"
 													disabled={!(this.state.restaurantName)}
 													onClick={this.searchRestaurant}
 											>
 												Search Restaurant
-											</Searchbtn>	
+											</button>	
 										
 											<div id='search-restaurant'>
 													{this.state.searchedRestaurant.length ? (
