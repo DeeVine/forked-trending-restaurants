@@ -79,6 +79,11 @@ class findRestaurant extends Component {
 				restaurantInfo: res.data,
 				coordsIdsArr: coordsArr
 			})
+
+			this.findPercentChange('checkins', 'checkins')
+			this.findPercentChange('rating_count', 'rating_count')
+			this.findPercentChange('reviews', 'review_count')
+
 		})
 		.catch(err => console.log(err));
 	}
@@ -309,6 +314,7 @@ class findRestaurant extends Component {
 
 		const stateParam = arraytocheck + 'change';
 
+		//sort arrays based on weekly percent change in descending order
 		let sortedCompare = compareAll.sort(function (a, b) {
 				  return b.weeklyChangePercent - a.weeklyChangePercent
 				})
