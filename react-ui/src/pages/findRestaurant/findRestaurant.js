@@ -9,7 +9,7 @@ import FilterData from "../../components/FilterData"
 import "./findRestaurant.css";
 import numjs from 'numjs';
 import Mathy from "../../utils/Mathy.js";
-import { CSSTransitionGroup } from 'react-transition-group' // ES6
+import { CSSTransitionGroup } from 'react-transition-group'; // ES6
 
 
 //Need to pass value from input field
