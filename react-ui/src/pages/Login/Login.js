@@ -1,5 +1,6 @@
 import React from 'react'
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import Map from "../../utils/Map.js";
 
 class Login extends React.Component {
   constructor(props) {
@@ -11,10 +12,7 @@ class Login extends React.Component {
   handleFormSubmit = (event) => {
     event.preventDefault()
 
-    geocodeByAddress(this.state.address)
-      .then(results => getLatLng(results[0]))
-      .then(latLng => console.log('Success', latLng))
-      .catch(error => console.error('Error', error))
+    Map.geoCode(this.state.address)
   }
 
   render() {
