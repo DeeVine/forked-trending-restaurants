@@ -79,6 +79,11 @@ class findRestaurant extends Component {
 				restaurantInfo: res.data,
 				coordsIdsArr: coordsArr
 			})
+
+			this.findPercentChange('checkins', 'checkins')
+			this.findPercentChange('rating_count', 'rating_count')
+			this.findPercentChange('reviews', 'review_count')
+
 		})
 		.catch(err => console.log(err));
 	}
@@ -266,19 +271,19 @@ class findRestaurant extends Component {
 	};
 
 	//create an array with differences for all restaurants in restaurantInfo
-	findPercentChange = () => {
+	findPercentChange = (arraytocheck, arrayvariable) => {
 		//array to hold the daily increase in ratings, reviews, checkins
 		const allDifferences = []
-
+		//create array with differences for all restaurnts in restaurant info
 		this.state.restaurantInfo.map(item => {
+			// console.log(item)
 			let obj = {}
-			let diff = this.findDiff(item.checkins, 'checkins')
+			let diff = this.findDiff(item[arraytocheck], arrayvariable)
 			obj.yelpId = item.yelpId
 			obj.diff = diff
 			allDifferences.push(obj)
 		})
-		console.log(allDifferences)
-
+		// console.log(allDifferences)
 		const compareAll = []
 		// find difference week over week
 		allDifferences.map(item => {
@@ -288,15 +293,16 @@ class findRestaurant extends Component {
 			let percentChange2 = 0
 			let weeklyChange = 0
 			let weeklyChangePercent = 0
+
+			//Switch goes here to determine 7, 14, 21, or 30 days
+
 			//first week
 			item.diff.slice(0, 3).map(item => {
 				percentChange1 += item.percentChange
-				// console.log(item.percentChange)
 			})
 			//second week
 			item.diff.slice(3, 6).map(item => {
 				percentChange2 += item.percentChange
-				// console.log(item.percentChange)
 			})
 			weeklyChange = percentChange2 - percentChange1
 			compare.yelpId = item.yelpId
@@ -305,7 +311,35 @@ class findRestaurant extends Component {
 			compareAll.push(compare)
 		})
 		console.log(compareAll)
-	}
+
+		const stateParam = arraytocheck + 'change';
+
+		//sort arrays based on weekly percent change in descending order
+		let sortedCompare = compareAll.sort(function (a, b) {
+				  return b.weeklyChangePercent - a.weeklyChangePercent
+				})
+				this.setState({
+					[stateParam]: sortedCompare
+				}, ()=> {
+					console.log(this.state)
+				})
+		// this.setState({
+		// 	[stateParam]: compareAll
+		// }, () => {
+		// 		console.log(this.state)
+		// 		let sortedCompare = compareAll.sort(function (a, b) {
+		// 		  return b.weeklyChangePercent - a.weeklyChangePercent
+		// 		})
+
+		// 		this.setState({
+		// 			[stateParam]: sortedCompare
+		// 		}, ()=> {
+		// 			console.log(this.state)
+		// 		})
+
+		// 		console.log(sortedCompare)
+		// 	})
+	};
 
 	findDiff = (arr, name) => {
 		// returns an arry of obj with date and count
