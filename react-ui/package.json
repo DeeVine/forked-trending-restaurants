@@ -9,6 +9,7 @@
     "awesome-phonenumber": "^2.2.3",
     "axios": "^0.17.1",
     "chart.js": "^2.7.1",
+    "geolib": "^2.0.24",
     "moment": "^2.20.1",
     "numjs": "^0.15.1",
     "react": "^15.4.2",

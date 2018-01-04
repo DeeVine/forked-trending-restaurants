@@ -12,7 +12,7 @@ import Mathy from "../../utils/Mathy.js";
 import Yelp from "../../utils/Yelp.js";
 import { CSSTransitionGroup } from 'react-transition-group' // ES6
 import moment from 'moment';
-
+import geolib from 'geolib';
 //Need to pass value from input field
 //Style chart and info into one element
 //Allow to click on element to view stats
@@ -26,6 +26,7 @@ class findRestaurant extends Component {
 			restaurantArr: [],
 			restaurantName: "Homeroom",
 			restaurantInfo: {},
+			coordsIdsArr: [],
 			restaurantDetails: false,
 			restaurantId: "",
 			filter: 'price',
@@ -61,8 +62,17 @@ class findRestaurant extends Component {
 		.then(res => {
 			console.log(res);
 			console.log(res.data);
+			const coordsArr = []
+			res.data.forEach(item => {
+				coordsArr.push({
+					yelpId: item.yelpId,
+					coordinates: item.coordinates
+				})
+			})
+			console.log('COORDSARR: ', coordsArr)
 			this.setState({
-				restaurantInfo: res.data
+				restaurantInfo: res.data,
+				coordsIdsArr: coordsArr
 			})
 		})
 		.catch(err => console.log(err));
@@ -443,12 +453,38 @@ class findRestaurant extends Component {
 		Yelp.yelpAPI(id, name, address, phone, city)
 	};
 
+	findClosestRestaurants = (query) => {
+		const geo = {latitude: 37.82306519999999, longitude: -122.24868090000001}
+		const compareArr = this.state.coordsIdsArr
+		const newArr = []
+		// loops through coordsid array, gets distnace from compare and inputs into new array
+		compareArr.forEach(item => {
+			let coords = item.coordinates
+			let distance = geolib.getDistance(geo, coords)
+			newArr.push({
+				yelpId: item.yelpId,
+				distance: distance,
+				coordinates: coords
+			})
+		})
+		newArr.sort((a,b) => {
+			return a.distance - b.distance
+		})
+		console.log('SORTED: ', newArr)
+		// console.log(geolib.getDistance(geo, compare))
+		// var coords = Geo.geoCodeByAddress(query)
+		// this.setState({
+		// 	search_coords: coords
+		// })
+	};
+
 	render() {
 
 		return (
 		<div>
 			<div className="wrapper">	
 			{/*Main section*/}
+				<button onClick={this.findClosestRestaurants}>BLAHHHH</button>
 				<button onClick={this.onClick}>showsidenav true</button> 
 				<button onClick={this.showline}>showline</button> 
 				<button onClick={this.showbar}>showbar</button> 
