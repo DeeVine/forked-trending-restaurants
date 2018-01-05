@@ -59,7 +59,7 @@ class findRestaurant extends Component {
 			showbar: true,
 			address: "",
 		};
-		this.onChange = (address) => this.setState({ address })
+		this.onChange = (restaurantName) => this.setState({ restaurantName })
 	}
   
 	componentDidMount() {
@@ -87,10 +87,8 @@ class findRestaurant extends Component {
 	//handle Submit for Geolocation
 
 	handleFormSubmit = (event) => {
-    event.preventDefault()
-
-    Map.geoCode(this.state.address)
-  	}
+    return Map.geoCode(this.state.restaurantName)
+  };
 
 
 
@@ -122,24 +120,16 @@ class findRestaurant extends Component {
 
     	if (index === -1) {
     		datalabel = this.state.restaurantDetails.name
-    		console.log('doesn\'t exist, push label as is: ' + datalabel);
     	}
     	else {
     		datalabel = this.state.restaurantDetails.name + '1'
-    		console.log('datalabel: ' + datalabel)
     	}
 
     	const labelArray = this.state.chartData.datasets.map(index => {
     		return index.label;
     	})
 
-    	console.log(labelArray);
-
     	let numberoftimes = labelArray.filter(word => word === this.state.restaurantDetails.name+"1")
-
-    	console.log("/"+this.state.restaurantDetails.name+"/");
-
-    	console.log(numberoftimes);
 
 		this.setState({
 			chartData: {
@@ -181,16 +171,28 @@ class findRestaurant extends Component {
 		});
 	};
 
+  geoCode = (address) => {
+  	geocodeByAddress(address)
+    	.then(results => getLatLng(results[0]))
+    	.then(latLng => {
+    		this.setState({
+    			geoCodeAddress: latLng
+    		})
+    	})
+  };
+
 	searchRestaurant = event => {
 		event.preventDefault();
 		if (this.state.restaurantName) {
+
+			this.geoCode(this.state.restaurantName)
+
 			const nameQue = (data) => {
 				API.nameQuery(this.state.restaurantName)
 				.then(res => {
 					// if no result found, start add new firm functions
 					// indexof, if data matches res.data, then take out
 					let fbResults = []
-					console.log(res)
 					if (res.data[0]) {
 						data.forEach(item => {
 
@@ -225,7 +227,6 @@ class findRestaurant extends Component {
 			}
 			API.APIsearch(url, params)
 				.then(res => {
-					console.log(res)
 					nameQue(res.data.data)
 				})
 				.catch(err => console.log(err))
@@ -489,9 +490,17 @@ class findRestaurant extends Component {
 		})
 
 		// take closest 30 and sort by highest score
+		const loop = 30 - newArr.length
+		const length = loop * -1
+		console.log(length)
 		console.log('SORTED: ', newArr)
-
+		for (let i = 0; i < length; i++) {
+			newArr.pop()
+		}
+		console.log('POPPED: ', newArr)
 		// seperate top 30 and display to html
+
+
 		// use first 10 in array to show as closest
 		// console.log(geolib.getDistance(geo, compare))
 		// var coords = Geo.geoCodeByAddress(query)
@@ -503,7 +512,7 @@ class findRestaurant extends Component {
 	render() {
 
 		const inputProps = {
-	      value: this.state.address,
+	      value: this.state.restaurantName,
 	      onChange: this.onChange,
 	    }
 
@@ -537,7 +546,7 @@ class findRestaurant extends Component {
 		      			<div className='columns'>
 		      				<div className="column is-12">
 		      					<h1> Find A Restaurant </h1>
-										<form onSubmit={this.handleFormSubmit}>
+										<form>
 											<PlacesAutocomplete
 													inputProps={inputProps}
 													value={this.state.restaurantName}
