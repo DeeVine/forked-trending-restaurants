@@ -532,9 +532,21 @@ class findRestaurant extends Component {
 			newArr.pop()
 		}
 		console.log('POPPED: ', newArr)
-		// seperate top 30 and display to html
-
-
+		// get top10 by score
+		// commented out!! /////////////
+		// newArr.sort((a,b) => {
+		// 	return a.score - b.score
+		// })
+		// const top10 = []
+		// for (var i = 0; i < 10; i++) {
+		// 	a = newArr.stash()
+		// 	top10.append(a)
+		// }
+		// console.log(top10)
+		// display to HTML
+		// this.setState({
+		// 	top10Distance: top10
+		// })
 		// use first 10 in array to show as closest
 		// console.log(geolib.getDistance(geo, compare))
 		// var coords = Geo.geoCodeByAddress(query)
