@@ -1,5 +1,7 @@
+**Data Visualization**
 
-- [ ] testing
+* Default layout 
+	* Restaurant basic info, chart, data, drop down/button interface to toggle filters
 
 
 * Updates to make:

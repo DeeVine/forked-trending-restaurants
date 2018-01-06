@@ -3,6 +3,7 @@ import { Input, Form, Searchbtn } from "../../components/Form";
 import { Searched, Searcheditems, FbSearchedItems } from "../../components/Searched";
 import Chart from "../../components/Chart";
 import Sidenav from "../../components/Sidenav";
+import Dropdown from "../../components/Dropdown";
 import API from "../../utils/API.js";
 import { Details } from "../../components/Details"
 import FilterData from "../../components/FilterData"
@@ -26,6 +27,7 @@ class findRestaurant extends Component {
 	constructor (props) {
 		super(props);
 		this.state = {
+			dropdown: '',
 			restaurantArr: [],
 			restaurantName: "Homeroom",
 			restaurantInfo: {},
@@ -94,8 +96,6 @@ class findRestaurant extends Component {
 	handleFormSubmit = (event) => {
     return Map.geoCode(this.state.restaurantName)
   };
-
-
 
   	//create labels and data arrays and sets chartData state
 	generateChartData = (res) => {
@@ -486,6 +486,19 @@ class findRestaurant extends Component {
 			this.setState({ showbar: !this.state.showbar });
 	};
 
+	dropdown = () => {
+		if(this.state.dropdown === "dropdown is-active") {
+			this.setState({
+				dropdown: "dropdown"
+			})
+		}
+		else {
+			this.setState({
+				dropdown: "dropdown is-active"
+			})
+		}
+	};
+
 	getYelpAddToDb = (ev) => {
 		console.log('getYelpAddToDb')
 		const id = ev.currentTarget.getAttribute('value')
@@ -544,38 +557,21 @@ class findRestaurant extends Component {
 	};
 
 	render() {
-
 		const inputProps = {
 	      value: this.state.restaurantName,
 	      onChange: this.onChange,
 	    }
 
 		return (
-		<div>
-			<div className="wrapper">	
-			{/*Main section*/}
-				<button onClick={this.findClosestRestaurants}>BLAHHHH</button>
-				<button onClick={this.onClick}>showsidenav true</button> 
-				<button onClick={this.showline}>showline</button> 
-				<button onClick={this.showbar}>showbar</button> 
-				<button onClick={this.findPercentChange}>finddiffall</button> 
-
-
-		      	<div className="data-section columns">
-
-		      		{ this.state.showsidenav ? 
-		      			<div className="side-nav column is-2">
-			      			<CSSTransitionGroup
-								transitionName="example"
-								transitionAppear={true}
-								transitionAppearTimeout={500}
-								transitionEnter={false}
-								transitionLeave={true}>
-				      			<Sidenav/>
-				      		</CSSTransitionGroup>
-			      		</div>  		
-		      		: null }
-		      		
+			<div>
+				<div className="wrapper">	
+				{/*Main section*/}
+					<button onClick={this.findClosestRestaurants}>BLAHHHH</button>
+					<button onClick={this.onClick}>showsidenav true</button> 
+					<button onClick={this.showline}>showline</button> 
+					<button onClick={this.showbar}>showbar</button> 
+					<button onClick={this.findPercentChange}>finddiffall</button> 
+		      	<div className="data-section columns">		      		
 		      		<div className="column auto">
 		      			<div className='columns'>
 		      				<div className="column is-12">
@@ -655,69 +651,60 @@ class findRestaurant extends Component {
 						    		</form>
 		      				</div>
 		      			</div>
-		      			<div className='columns'>
-			      			<div className="column is-three-fifths">
-					      		<Chart className='charts' chartData={this.state.chartData} chartName="Average Checkins by Date"
-					      		 showline={this.state.showline} showbar={this.state.showbar}legendPosition="top"/>
-					      	</div>
-					      	<div className="column auto">
-					      		<div className="data-navigation">
-					      			<p class='percentage'>+75% Increase</p>
-					      			<p class='percentage'>-30% Decrease</p>
-											{this.state.details ? (
-												<Details 
-													name={this.state.restaurantDetails.name}
-													checkins={this.state.restaurantDetails.checkins}
-													checkinsAvg={this.state.checkinsAvg}
-													ratingCountAvg={this.state.ratingsAvg}
-													reviewsAvg={this.state.reviewsAvg}
-													totals={this.state.totalAvg}
-													handleInputChange={this.handleInputChange}
-													loadFilter={this.loadFilter}
-													getTotals={() => this.getTotals()}
-												/>
+		      			{this.state.details ? (
+		      				<div>
+										<div className='columns'>
+				      				<div className='column-auto'>
+				      					<p className='restaurant-header'>{this.state.restaurantDetails.name}</p>
+				      					<p className='restaurant-address'>
+					      					{this.state.restaurantDetails.location.address}, {this.state.restaurantDetails.location.city}, {this.state.restaurantDetails.location.state} &#8226; <a target='blank' href={this.state.restaurantDetails.yelpURL}>Yelp Page</a>
+				      					</p>
+				      				</div>		      				
+				      			</div>
+				      			<div className='columns'>		      				
+				      			<div className="column is-8">			 
+						      		<Chart className='charts' chartData={this.state.chartData} chartName="Restaurant Checkins by Date"
+						      		 showline={this.state.showline} showbar={this.state.showbar}legendPosition="top"/>
+						      	</div>
+						      	<div className="column is-4">
+						      		<div className="data-navigation">
+						      			<Dropdown onClick={this.dropdown} className={this.state.dropdown}/>
+
+						      			<p className='percentage'>Weekly Percentage Change</p>
+												{this.state.details ? (
+													<Details 
+														name={this.state.restaurantDetails.name}
+														checkins={this.state.restaurantDetails.checkins}
+														checkinsAvg={this.state.checkinsAvg}
+														ratingCountAvg={this.state.ratingsAvg}
+														reviewsAvg={this.state.reviewsAvg}
+														totals={this.state.totalAvg}
+														handleInputChange={this.handleInputChange}
+														loadFilter={this.loadFilter}
+														getTotals={() => this.getTotals()}
+													/>
+													) : (
+													null
+												)}
+												{this.state.filteredRestaurants.length ? (
+													<h4> Something </h4>
+													// <FilterData />
 												) : (
-												null
-											)}
-											{this.state.filteredRestaurants.length ? (
-												<h4> Something </h4>
-												// <FilterData />
-											) : (
-												<h4> Nothing </h4>
-											)}
+													<h4> Nothing </h4>
+												)}
+											</div>
 										</div>
 									</div>
-								</div>	
+								</div>
+										) : (
+										null
+									)}		      
 			    		</div>
 			    	</div>
-
-		      	{/*<div id='restaurants'>
-			      	{this.state.restaurantInfo.length ? (
-			        	<Searched>
-			          	{this.state.restaurantInfo.map(restaurant => (
-				            <Searcheditems key={restaurant._id} showDetails={(ev) => this.showDetails(ev)}
-				            	value={restaurant._id}
-				            >              
-											<p> Name of Restaurant: {restaurant.name} </p>
-											<p> Address: {restaurant.location.address}, {restaurant.location.city}, {restaurant.location.state} </p>
-											<p> Data Summary: 
-												<ul>
-													<li>Yelp Rating: {restaurant.rating[0].rating} </li>
-													<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
-												</ul>
-											</p>
-				            </Searcheditems>
-				          	))}
-			       		</Searched>
-						) : (
-						<h3>No Results to Display</h3>
-						)}
-			    </div>*/}
-				</div>
-			
-		</div>
-	)
-};
+				</div>	
+			</div>
+		)
+	};
 }
 
 export default findRestaurant;

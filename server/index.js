@@ -14,7 +14,7 @@ const mlab = "mongodb://admin:bootcamp123@ds159776.mlab.com:59776/heroku_vg8qr96
 
 const local = "mongodb://localhost/trendingreviewapp"
 
-var MONGODB_URI = process.env.MONGODB_URI || mlab;
+var MONGODB_URI = process.env.MONGODB_URI || local;
 mongoose.connect(MONGODB_URI, {
   useMongoClient: true
 });
