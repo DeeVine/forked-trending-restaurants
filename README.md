@@ -77,3 +77,7 @@ todo:
     
     extra: check if rating changes
                     google API
+what else to display and how to display it
+
+state that saves the top 30 restaurants by location
+filter can sort by distance or score
