@@ -15,6 +15,7 @@ import moment from 'moment';
 import geolib from 'geolib';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import Map from "../../utils/Map.js";
+import Filter from '../../utils/Filter.js';
 
 //Need to pass value from input field
 //Style chart and info into one element
@@ -62,32 +63,44 @@ class findRestaurant extends Component {
 		this.onChange = (restaurantName) => this.setState({ restaurantName })
 	}
   
-	componentDidMount() {
+  componentWillMount() {
 		API.AllReviews()
 		.then(res => {
-			console.log(res);
-			console.log(res.data);
 			const coordsArr = []
 			res.data.forEach(item => {
 				coordsArr.push({
 					yelpId: item.yelpId,
-					coordinates: item.coordinates
+					coordinates: item.coordinates,
+					score: item.trending_score
 				})
 			})
-			console.log('COORDSARR: ', coordsArr)
+			this.findPercentChange(res.data,'checkins', 'checkins')
+			this.findPercentChange(res.data,'rating_count', 'rating_count')
+			this.findPercentChange(res.data,'reviews', 'review_count')
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(position => {
+				const userCoordinates = {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude
+				}
+				this.setState({
+					restaurantInfo: res.data,
+					coordsIdsArr: coordsArr,
+					userCoordinates: userCoordinates
+				})
+			})
+		} else {
 			this.setState({
 				restaurantInfo: res.data,
-				coordsIdsArr: coordsArr
+				coordsIdsArr: coordsArr,
+				userCoordinates: null
 			})
-
-			this.findPercentChange('checkins', 'checkins')
-			this.findPercentChange('rating_count', 'rating_count')
-			this.findPercentChange('reviews', 'review_count')
+		}
 
 		})
 		.catch(err => console.log(err));
-	}
 
+  }
 
 	//handle Submit for Geolocation
 
@@ -272,11 +285,11 @@ class findRestaurant extends Component {
 	};
 
 	//create an array with differences for all restaurants in restaurantInfo
-	findPercentChange = (arraytocheck, arrayvariable) => {
+	findPercentChange = (resData,arraytocheck, arrayvariable) => {
 		//array to hold the daily increase in ratings, reviews, checkins
 		const allDifferences = []
 		//create array with differences for all restaurnts in restaurant info
-		this.state.restaurantInfo.map(item => {
+		resData.map(item => {
 			// console.log(item)
 			let obj = {}
 			let diff = this.findDiff(item[arraytocheck], arrayvariable)
@@ -311,8 +324,6 @@ class findRestaurant extends Component {
 			compare.weeklyChangePercent = weeklyChange/percentChange1
 			compareAll.push(compare)
 		})
-		console.log(compareAll)
-
 		const stateParam = arraytocheck + 'change';
 
 		//sort arrays based on weekly percent change in descending order
@@ -322,7 +333,6 @@ class findRestaurant extends Component {
 				this.setState({
 					[stateParam]: sortedCompare
 				}, ()=> {
-					console.log(this.state)
 				})
 		// this.setState({
 		// 	[stateParam]: compareAll
@@ -505,7 +515,12 @@ class findRestaurant extends Component {
 	};
 
 	findClosestRestaurants = (query) => {
-		const geo = {latitude: 37.82306519999999, longitude: -122.24868090000001}
+		var geo
+		if (this.state.userCoordinates === null) {
+			geo = {latitude: 37.82306519999999, longitude: -122.24868090000001}
+		} else {
+			geo = this.state.userCoordinates
+		}
 		const compareArr = this.state.coordsIdsArr
 		const newArr = []
 		// loops through coordsid array, gets distnace from compare and inputs into new array
@@ -515,9 +530,12 @@ class findRestaurant extends Component {
 			newArr.push({
 				yelpId: item.yelpId,
 				distance: distance,
-				coordinates: coords
+				coordinates: coords,
+				score: item.score['7day']['checkins']
 			})
+			
 		})
+
 		// sort by distance
 		newArr.sort((a,b) => {
 			return a.distance - b.distance
@@ -525,34 +543,17 @@ class findRestaurant extends Component {
 
 		// take closest 30 and sort by highest score
 		const loop = 30 - newArr.length
-		const length = loop * -1
-		console.log(length)
-		console.log('SORTED: ', newArr)
+		const length = loop*-1
+
 		for (let i = 0; i < length; i++) {
 			newArr.pop()
 		}
-		console.log('POPPED: ', newArr)
-		// get top10 by score
-		// commented out!! /////////////
-		// newArr.sort((a,b) => {
-		// 	return a.score - b.score
-		// })
-		// const top10 = []
-		// for (var i = 0; i < 10; i++) {
-		// 	a = newArr.stash()
-		// 	top10.append(a)
-		// }
-		// console.log(top10)
+		const top10Arr = Filter.getTop10ByScore(newArr)
 		// display to HTML
-		// this.setState({
-		// 	top10Distance: top10
-		// })
-		// use first 10 in array to show as closest
-		// console.log(geolib.getDistance(geo, compare))
-		// var coords = Geo.geoCodeByAddress(query)
-		// this.setState({
-		// 	search_coords: coords
-		// })
+		this.setState({
+			top10Distance: top10Arr
+		})
+		console.log(this.state)
 	};
 
 	render() {
