@@ -1,5 +1,20 @@
+**Data Visualization**
 
-- [ ] testing
+* Homepage top 5
+    * Name, Category, Start Rating
+
+* Default layout 
+	* Restaurant basic info, chart, data, drop down/button interface to toggle filters
+
+* Category search filter
+    * location search filter
+* Pictures (3+ they look cool)
+* Add in ratings for each source and link out from the
+* Up or down position to right of search result next to picture
+* Show your highest/lowest number of checkins
+    *Your individual average
+
+*Pick businesses to compare
 
 
 * Updates to make:
@@ -9,6 +24,9 @@
  * styling to main header
  * Text annotation
  * Add footer
+
+Google Reviews (5 latest)
+ *plus other review sources if possible
 
 * find % increase per week (require a minimum such as 40 reviews to qualify)
 
