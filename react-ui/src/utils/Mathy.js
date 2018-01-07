@@ -77,9 +77,9 @@ export default {
   },
 
   getMean: arr => {
-    const valArray = numjs.array(arr)
-    const mean = valArray.mean()
-    return mean
+    let sum = arr.reduce((previous, current) => current += previous);
+    let avg = sum / arr.length;
+    return avg
   }
 
 }
