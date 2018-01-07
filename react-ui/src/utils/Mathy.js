@@ -1,6 +1,7 @@
 import numjs from 'numjs';
-
+import Round from './Round.js'
 export default {
+
   getDiffwithDate: (arr, name) => {
     // returns an arry of obj with date and count
     const values = []
@@ -14,9 +15,9 @@ export default {
     const diff = []
     for (var i = 0; i < values.length - 1; i++) {
       let difference = values[i+1]['count'] - values[i]['count']
-
       let val = difference / values[i]['count']
-      let percentChange = this.roundValue(val, -5)
+
+      let percentChange = Round(val, -5)
 
       let query_date = values[i+1]['query_date']
       diff.push({
@@ -43,9 +44,9 @@ export default {
     ratings = numjs.array(ratings);
     reviews = numjs.array(reviews);
 
-    const checkinsMean = this.roundValue(checkins.mean(), -6)
-    const ratingsMean = this.roundValue(ratings.mean(), -6)
-    const reviewsMean = this.roundValue(reviews.mean(), -6)
+    const checkinsMean = Round(checkins.mean(), -6)
+    const ratingsMean = Round(ratings.mean(), -6)
+    const reviewsMean = Round(reviews.mean(), -6)
 
     obj.checkinsMean = checkinsMean
     obj.ratingsMean = ratingsMean
@@ -58,10 +59,10 @@ export default {
   findRoundedDiffMean: (arr, name) => {
     const diff = this.findDifference(arr, name)
     const mean = this.getMean(diff)
-    return this.roundValue(mean, -2)
+    return Round(mean, -2)
   },
 
-  findDifference: function(arr, name, days) {
+  findDifference: (arr, name, days) => {
     const values = []
     for (var i = 0; i < arr.length; i++) {
       values.push(arr[i][name])
@@ -75,31 +76,7 @@ export default {
     return diff
   },
 
-  roundValue: function(value, exp) {
-    let type = 'round'
-    // If the exp is undefined or zero...
-    if (typeof exp === 'undefined' || +exp === 0) {
-      return Math[type](value);
-    }
-    value = +value;
-    exp = +exp;
-    // If the value is not a number or the exp is not an integer...
-    if (value === null || isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-      return NaN;
-    }
-    // If the value is negative...
-    if (value < 0) {
-      return -this.roundValue(-value, exp);
-    }
-    // Shift
-    value = value.toString().split('e');
-    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-    // Shift back
-    value = value.toString().split('e');
-    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-  },
-
-  getMean: function(arr) {
+  getMean: arr => {
     const valArray = numjs.array(arr)
     const mean = valArray.mean()
     return mean
