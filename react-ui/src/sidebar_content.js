@@ -24,12 +24,32 @@ const styles = {
     height: '100%',
     backgroundColor: 'white',
   },
+  sidebarContainer: {
+    width: '100%',
+    marginBottom: '2px',
+    padding: '10px',
+  },
 };
 
 const SidebarContent = (props) => {
   const style = props.style ? {...styles.sidebar, ...props.style} : styles.sidebar;
 
   const links = [];
+  let number  = 0
+  for (var i = 0; i < 10; i++) {
+    number = (number + 1)
+    links.push(
+      <div className="sidebarContainer" style={styles.sidebarContainer}>
+        <p>
+          <p className="topTenTitle" >
+            Restaurant {number}
+          </p>
+          <img alt="sidebarImage" src="https://assets.bonappetit.com/photos/57ae0a63f1c801a1038bcf18/16:9/w_1000,c_limit/texas-style-smoked-brisket.jpg"  style={styles.sidebarImage} />
+        </p>
+      </div>
+    )
+  }
+  
 
   return (
     <MaterialTitlePanel title="Menu" style={style}>
@@ -39,6 +59,9 @@ const SidebarContent = (props) => {
         <a href="/findRestaurant" style={styles.sidebarLink}>Find A Restaurant</a>
         <a href="/Login" style={styles.sidebarLink}>Login</a>
         <div style={styles.divider} />
+        <h2>
+          Top 10 Restaurant
+        </h2>
         {links}
       </div>
     </MaterialTitlePanel>

@@ -2,3 +2,24 @@
 	font-size: 30px;
 	font-weight: bold;
 }
+.wrapper{
+	margin-bottom: 50px;
+}
+.fa-search {
+	position: fixed;
+	z-index: 2;
+	top: 20;
+	right: 10px;
+	margin-right: 10px;
+	font-size: 50px;
+}
+.searchIcon {
+	position: fixed;
+	top: 350px;
+	right: 10px;
+	margin-right: 10px;
+	z-index: 2;
+	font-size: 50px;
+	width: 60%;
+	height: 60px;
+	}
