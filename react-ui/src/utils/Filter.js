@@ -1,5 +1,6 @@
 import axios from "axios";
 import Mathy from './Mathy.js'
+import Round from './Round.js'
 export default {
 	getTop10ByScore: function(sortArr) {
 		const top10 = []
@@ -29,9 +30,9 @@ export default {
 		dataArr.forEach(item => {
 			let uniqueDateArr = []
 			let diffandDatesArr = Mathy.getDiffwithDate(item.checkins, 'checkins')
-			console.log(diffandDatesArr)
 			diffandDatesArr.map(each => {
 				each.query_date = this.convertDate(each.query_date)
+
 				let queryDate = each.query_date
 				let index = uniqueDateArr.findIndex(x => x === queryDate)
 
@@ -39,24 +40,30 @@ export default {
 					uniqueDateArr.push(queryDate)
 				}
 			})
-
 			// loop through uniqueDateArr dates and use date to
 			// filter by date to get average for each day
 			// return day average as object for past 14 days
 			// filters dates into indiv arrays dynamically
 			
 			uniqueDateArr.forEach(value => {
-				let filteredDateArr = item.checkins.filter(each => each.query_date === value)
-				
+				let filteredDateArr = diffandDatesArr.filter(each => each.query_date === value)
 				if (obj.hasOwnProperty(value)) {
-					obj[value].push(filteredDateArr[0].checkins)
+					obj[value].push(filteredDateArr[0].difference)
 				} else {
-					obj[value] = [filteredDateArr[0].checkins]
+					obj[value] = []
+					obj[value].push(filteredDateArr[0].difference)
 				}
 				
 			})		
 		})
-
+		// find avg for each date in obj
+		const dailyAvg = {}
+		Object.keys(obj).map((objectKey, index) => {
+			let value = obj[objectKey]
+			dailyAvg[objectKey] =	Round(Mathy.getMean(value), -5)
+		})
+		console.log(dailyAvg)
+		return dailyAvg
 	}
 
 }
