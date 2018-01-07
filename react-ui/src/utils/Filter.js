@@ -25,45 +25,101 @@ export default {
 		return queryDate
 	},
 
-	dailyDiffAvg: function(dataArr) {
-		let obj = {}
-		dataArr.forEach(item => {
-			let uniqueDateArr = []
-			let diffandDatesArr = Mathy.getDiffwithDate(item.checkins, 'checkins')
-			diffandDatesArr.map(each => {
-				each.query_date = this.convertDate(each.query_date)
+	getUniqueDatesArr: function(arr) {
+		const uniqueDateArr = []
+		arr.map(each => {
+			each.query_date = this.convertDate(each.query_date)
 
-				let queryDate = each.query_date
-				let index = uniqueDateArr.findIndex(x => x === queryDate)
+			let queryDate = each.query_date
+			let index = uniqueDateArr.findIndex(x => x === queryDate)
+
+			if (index === -1) {
+				uniqueDateArr.push(queryDate)
+			}
+		})
+		return uniqueDateArr
+	},
+
+// finds daily avg depending on what array is being thrown into it
+	dailyDiffAvg: function(dataArr) {
+		let obj = {
+			'checkins': {},
+			'rating_count': {},
+			'reviews': {}
+		}
+		// loops through passed array of restaurants
+		dataArr.forEach(item => {
+
+			// converts each restaurant data into differences, %change, and date
+			let diffandDatesCheckins = Mathy.getDiffwithDate(item.checkins, 'checkins');
+			let diffandDatesRatings = Mathy.getDiffwithDate(item.rating_count, 'rating_count');
+			let diffandDatesReviews = Mathy.getDiffwithDate(item.reviews, 'review_count');
+
+			// loops through converted array to ouput array of unique dates
+			const uniqueDateArr = [];
+			diffandDatesCheckins.map(each => {
+				each.query_date = this.convertDate(each.query_date);
+
+				let queryDate = each.query_date;
+				let index = uniqueDateArr.findIndex(x => x === queryDate);
 
 				if (index === -1) {
-					uniqueDateArr.push(queryDate)
+					uniqueDateArr.push(queryDate);
 				}
 			})
-			// loop through uniqueDateArr dates and use date to
-			// filter by date to get average for each day
-			// return day average as object for past 14 days
-			// filters dates into indiv arrays dynamically
-			
+			// groups array of values into obj by date
+			diffandDatesCheckins.forEach(bam => {
+				bam.query_date = this.convertDate(bam.query_date)
+			})
+
+			diffandDatesRatings.forEach(bam => {
+				bam.query_date = this.convertDate(bam.query_date)
+			})
+
+			diffandDatesReviews.forEach(bam => {
+				bam.query_date = this.convertDate(bam.query_date)
+			})
+
 			uniqueDateArr.forEach(value => {
-				let filteredDateArr = diffandDatesArr.filter(each => each.query_date === value)
-				if (obj.hasOwnProperty(value)) {
-					obj[value].push(filteredDateArr[0].difference)
+				let checkinsFilteredArr = diffandDatesCheckins.filter(boom => boom.query_date === value)
+				let ratingsFilteredArr = diffandDatesRatings.filter(boom => boom.query_date === value)
+				let reviewsFilteredArr = diffandDatesReviews.filter(boom => boom.query_date === value)
+
+				if (obj['checkins'][value] === undefined) {
+					obj['checkins'][value] = []
+					obj['checkins'][value].push(checkinsFilteredArr[0].difference)
 				} else {
-					obj[value] = []
-					obj[value].push(filteredDateArr[0].difference)
+					obj['checkins'][value].push(checkinsFilteredArr[0].difference)
 				}
-				
-			})		
+				if (obj['rating_count'][value] === undefined) {
+					obj['rating_count'][value] = []
+					obj['rating_count'][value].push(ratingsFilteredArr[0].difference)
+				} else {
+					obj['rating_count'][value].push(ratingsFilteredArr[0].difference)
+				}
+				if (obj['reviews'][value] === undefined) {
+					obj['reviews'][value] = []
+					obj['reviews'][value].push(reviewsFilteredArr[0].difference)
+				} else {
+					obj['reviews'][value].push(reviewsFilteredArr[0].difference)
+				}
+			})
 		})
+
 		// find avg for each date in obj
-		const dailyAvg = {}
-		Object.keys(obj).map((objectKey, index) => {
-			let value = obj[objectKey]
-			dailyAvg[objectKey] =	Round(Mathy.getMean(value), -5)
+		Object.keys(obj.checkins).map((objectKey, index) => {
+			let value = obj.checkins[objectKey]
+			obj.checkins[objectKey] =	Round(Mathy.getMean(value), -6)
 		})
-		console.log(dailyAvg)
-		return dailyAvg
+		Object.keys(obj.rating_count).map((objectKey, index) => {
+			let value = obj.rating_count[objectKey]
+			obj.rating_count[objectKey] =	Round(Mathy.getMean(value), -6)
+		})
+		Object.keys(obj.reviews).map((objectKey, index) => {
+			let value = obj.reviews[objectKey]
+			obj.reviews[objectKey] =	Round(Mathy.getMean(value), -6)
+		})
+		return obj
 	}
 
 }

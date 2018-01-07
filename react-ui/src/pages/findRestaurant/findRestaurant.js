@@ -497,6 +497,7 @@ class findRestaurant extends Component {
 		console.log(this.state)
 
 		const dailyAvg = Filter.dailyDiffAvg(this.state.restaurantInfo)
+		console.log(dailyAvg)
 		this.setState({
 			dailyCheckinAvgObj: dailyAvg
 		})
