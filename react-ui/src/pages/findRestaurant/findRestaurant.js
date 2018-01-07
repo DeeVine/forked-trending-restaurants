@@ -21,7 +21,6 @@ import Filter from '../../utils/Filter.js';
 //Style chart and info into one element
 //Allow to click on element to view stats
 //Create separate chart components/arrays for rating, rating count, checkins, review count, star_rating
-
 class findRestaurant extends Component {
 
 	constructor (props) {
@@ -58,6 +57,7 @@ class findRestaurant extends Component {
 			showsidenav: true,
 			showline: true,
 			showbar: true,
+			onSearchClick: true,
 			address: "",
 		};
 		this.onChange = (restaurantName) => this.setState({ restaurantName })
@@ -85,7 +85,6 @@ class findRestaurant extends Component {
 					latitude: position.coords.latitude,
 					longitude: position.coords.longitude
 				};
-				
 				this.setState({
 					restaurantInfo: res.data,
 					coordsIdsArr: coordsArr,
@@ -417,6 +416,14 @@ class findRestaurant extends Component {
     this.setState({ showsidenav: !this.state.showsidenav });
    };
 
+    onSearchClick =() => {
+    	this.setState({searchIcon: !this.state.searchIcon} );
+    console.log('i was clicked');
+  };
+  closeSearch=() => {
+  	console.log('i was searched')
+  	this.setState({searchIcon: !this.state.searchIcon} );
+  }
 	showline = () => {
 			this.setState({ showline: !this.state.showline });
 	};
@@ -424,6 +431,7 @@ class findRestaurant extends Component {
 	showbar = () => {
 			this.setState({ showbar: !this.state.showbar });
 	};
+
 // looks for yelpId via information sent from clicking on
 // search result. sends to yelpAPI in utils to pull info
 // and send to DB
@@ -491,6 +499,8 @@ class findRestaurant extends Component {
 		console.log(this.state)
 		Filter.dailyDiffAvg(this.state.restaurantInfo)
 	}
+
+
 	render() {
 
 		const inputProps = {
@@ -509,8 +519,16 @@ class findRestaurant extends Component {
 				<button onClick={this.showbar}>showbar</button> 
 				<button onClick={this.findPercentChange}>findDiffall</button> 
 
+				<a onClick={this.onSearchClick}>
+					<div className="input-with-icon">
+				       <i className="fa fa-search"></i>
+					</div>
+				</a>
+
+				
 
 		      	<div className="data-section columns">
+					
 
 		      		{ this.state.showsidenav ? 
 		      			<div className="side-nav column is-2">
@@ -530,19 +548,9 @@ class findRestaurant extends Component {
 		      				<div className="column is-12">
 		      					<h1> Find A Restaurant </h1>
 										<form>
-											<PlacesAutocomplete
-													inputProps={inputProps}
-													value={this.state.restaurantName}
-													onChange={this.handleInputChange}
-													name="restaurantName"
-													placeholder="restaurant"
-											/>
-											<button type="submit"
-													disabled={!(this.state.restaurantName)}
-													onClick={this.searchRestaurant}
-											>
-												Search Restaurant
-											</button>	
+											
+
+
 										
 											<div id='search-restaurant'>
 													{this.state.searchedRestaurant.length ? (
@@ -640,6 +648,35 @@ class findRestaurant extends Component {
 			    		</div>
 			    	</div>
 
+
+			    	{ this.state.searchIcon ? 
+		      			<div className="side-nav column is-12">
+			      			<CSSTransitionGroup
+								transitionName="example"
+								transitionAppear={true}
+								transitionAppearTimeout={500}
+								transitionEnter={false}
+								transitionLeave={true}>
+								<div className='searchIcon'>
+				      			<PlacesAutocomplete
+									inputProps={inputProps}
+									value={this.state.restaurantName}
+									onChange={this.handleInputChange}
+									name="restaurantName"
+									placeholder="restaurant"
+								/>
+
+								<button type="submit"
+													disabled={!(this.state.restaurantName)}
+													onClick={this.searchRestaurant}
+													onClick={this.closeSearch}
+											>
+												Search Restaurant
+											</button>
+								</div>
+				      		</CSSTransitionGroup>
+			      		</div>  		
+		      		: null }
 		      	{/*<div id='restaurants'>
 			      	{this.state.restaurantInfo.length ? (
 			        	<Searched>

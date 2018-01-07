@@ -47,7 +47,9 @@ class App extends React.Component {
     this.renderPropNumber = this.renderPropNumber.bind(this);
     this.onSetOpen = this.onSetOpen.bind(this);
     this.menuButtonClick = this.menuButtonClick.bind(this);
+
   }
+ 
 
   onSetOpen(docked) {
     this.setState({docked: docked});
