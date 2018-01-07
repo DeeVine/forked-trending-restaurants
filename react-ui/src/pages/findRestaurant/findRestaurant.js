@@ -79,7 +79,7 @@ class findRestaurant extends Component {
 			// this.findPercentChange(res.data,'reviews', 'review_count')
 		console.log('BEFORE GEOLOCATE')
 		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(function(position) {
+			navigator.geolocation.getCurrentPosition(position => {
 				console.log(position)
 				let userCoordinates = {
 					latitude: position.coords.latitude,
@@ -90,9 +90,7 @@ class findRestaurant extends Component {
 					coordsIdsArr: coordsArr,
 					userCoordinates: userCoordinates
 				})
-			},function(error) {
-				console.log('error', error)
-			}, {timeout:5000});
+			})
 		} else {
 			this.setState({
 				restaurantInfo: res.data,
@@ -495,11 +493,14 @@ class findRestaurant extends Component {
 		console.log(this.state)
 	};
 
-	findDailyDiffAvg = () => {
+	findDailyDiffAvg = (filtered_arr) => {
 		console.log(this.state)
-		Filter.dailyDiffAvg(this.state.restaurantInfo)
-	}
 
+		const dailyAvg = Filter.dailyDiffAvg(this.state.restaurantInfo)
+		this.setState({
+			dailyCheckinAvgObj: dailyAvg
+		})
+	};
 
 	render() {
 

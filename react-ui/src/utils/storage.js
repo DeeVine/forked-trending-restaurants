@@ -281,7 +281,7 @@
 				})
 				compiledData.checkins = days
 				console.log(compiledData)
-			}
+
 			const dailyPriceFilter = getDailyObjectData('price', priceData)
 			// const flatten = (arr) => arr.reduce((flat,next) => flat.concat(next), [])
 			// produces array of objects with all dates, organized.
