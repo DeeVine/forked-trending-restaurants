@@ -17,13 +17,17 @@ const styles = {
     padding: 8,
   },
   content: {
-    padding: '16px',
+    position: 'absolute',
+    paddingBottom : '100px',
+    minHeight : '100vh',
+    width: '100%',
+    overFlowY: 'scroll',
   },
   logo: {
   	width: '50%',
   	display: 'block',
     margin: '0 auto',
-  }
+  },
 };
 
 class App extends React.Component {
@@ -107,22 +111,20 @@ class App extends React.Component {
 
     return (
       <div>
-	   	<Router>
+            <Router>
 	      <Sidebar {...sidebarProps}>
 	        <MaterialTitlePanel title={contentHeader}>
-	          	<div style={styles.content}>
+	          	<div className ='content' style={styles.content}>
                 <Route exact path="/Home" component={Home} />
                 <Route exact path="/Login" component={Login} />
-  			        <Route exact path="/findRestaurant" component={findRestaurant} />
-                          
-	          </div>
-                         
+                <Route exact path="/findRestaurant" component={findRestaurant} />
+                         <Footer />
+            </div>           
 	        </MaterialTitlePanel>
+  
 	      </Sidebar>
+        
 	    </Router>
-      <div>
-           
-      </div>
       </div>
     );
   }

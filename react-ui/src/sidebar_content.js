@@ -30,6 +30,12 @@ const SidebarContent = (props) => {
   const style = props.style ? {...styles.sidebar, ...props.style} : styles.sidebar;
 
   const links = [];
+  for (var i = 0; i < 10; i++) {
+    links.push(
+
+    )
+  }
+  
 
   return (
     <MaterialTitlePanel title="Menu" style={style}>
