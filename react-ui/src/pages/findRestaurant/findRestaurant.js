@@ -610,6 +610,7 @@ class findRestaurant extends Component {
 																			<ul>
 																				<li>Yelp Rating: {restaurant.rating[0].rating} </li>
 																				<li>Yelp URL: <a href={restaurant.yelpURL} target='blank'>{restaurant.name}</a></li>
+																				<img src={restaurant.yelpImg}/>
 																			</ul>
 																		</p>
 																	</Searcheditems>
