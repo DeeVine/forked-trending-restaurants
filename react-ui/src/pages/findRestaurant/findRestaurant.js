@@ -74,21 +74,26 @@ class findRestaurant extends Component {
 					score: item.trending_score
 				})
 			})
-			this.findPercentChange(res.data,'checkins', 'checkins')
-			this.findPercentChange(res.data,'rating_count', 'rating_count')
-			this.findPercentChange(res.data,'reviews', 'review_count')
+			// this.findPercentChange(res.data,'checkins', 'checkins')
+			// this.findPercentChange(res.data,'rating_count', 'rating_count')
+			// this.findPercentChange(res.data,'reviews', 'review_count')
+		console.log('BEFORE GEOLOCATE')
 		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(position => {
-				const userCoordinates = {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				console.log(position)
+				let userCoordinates = {
 					latitude: position.coords.latitude,
 					longitude: position.coords.longitude
-				}
+				};
+				
 				this.setState({
 					restaurantInfo: res.data,
 					coordsIdsArr: coordsArr,
 					userCoordinates: userCoordinates
 				})
-			})
+			},function(error) {
+				console.log('error', error)
+			}, {timeout:5000});
 		} else {
 			this.setState({
 				restaurantInfo: res.data,
@@ -96,6 +101,13 @@ class findRestaurant extends Component {
 				userCoordinates: null
 			})
 		}
+		// 	console.log('Hi')
+
+
+		// 	})
+		// } else {
+
+		// }
 
 		})
 		.catch(err => console.log(err));
@@ -163,22 +175,6 @@ class findRestaurant extends Component {
 		}, () => {
 			console.log(this.state);
 		})
-	};
-
-	loadRestaurants = () => {
-		API.AllReviews()
-		.then(res => {
-		console.log(res)
-		})
-		.catch(err => console.log(err));
-	};
-
-	nameQuery = name => {
-		API.nameQuery(name)
-		.then(res => {
-		console.log(res)
-		})
-		.catch(err => console.log(err));
 	};
 
     //update state whenever field input changes
@@ -259,13 +255,13 @@ class findRestaurant extends Component {
 			.then(res => {
 				console.log(res.data[0])
 
-				let checkinsAvg = this.findDifference(res.data[0].checkins, 'checkins')
-				let reviewsAvg = this.findDifference(res.data[0].reviews, 'review_count')
-				let ratingsAvg = this.findDifference(res.data[0].rating_count, 'rating_count')
-				let diff = this.findDiff(res.data[0].checkins, 'checkins');
-				let ratingDiff = this.findDiff(res.data[0].rating_count, 'rating_count');
-				let reviewDiff = this.findDiff(res.data[0].reviews, 'review_count');
-				let totalAvg = this.findTotalStats(this.state.restaurantInfo)
+				let checkinsAvg = Mathy.findRoundedDiffMean(res.data[0].checkins, 'checkins')
+				let reviewsAvg = Mathy.findRoundedDiffMean(res.data[0].reviews, 'review_count')
+				let ratingsAvg = Mathy.findRoundedDiffMean(res.data[0].rating_count, 'rating_count')
+				let diff = Mathy.getDiffwithDate(res.data[0].checkins, 'checkins');
+				let ratingDiff = Mathy.getDiffwithDate(res.data[0].rating_count, 'rating_count');
+				let reviewDiff = Mathy.getDiffwithDate(res.data[0].reviews, 'review_count');
+				// let totalAvg = this.findTotalStats(this.state.restaurantInfo)
 
 				this.setState({
 					restaurantDetails: res.data[0],
@@ -275,8 +271,8 @@ class findRestaurant extends Component {
 					ratingsAvg: ratingsAvg,
 					diffArr: diff,
 					ratingDiff: ratingDiff,
-					reviewDiff: reviewDiff,
-					totalAvg: totalAvg
+					reviewDiff: reviewDiff
+					// totalAvg: totalAvg
 				})
 				console.log(this.state)
 				this.generateChartData(this.state.diffArr)
@@ -292,7 +288,7 @@ class findRestaurant extends Component {
 		resData.map(item => {
 			// console.log(item)
 			let obj = {}
-			let diff = this.findDiff(item[arraytocheck], arrayvariable)
+			let diff = Mathy.getDiffwithDate(item[arraytocheck], arrayvariable)
 			obj.yelpId = item.yelpId
 			obj.diff = diff
 			allDifferences.push(obj)
@@ -352,73 +348,6 @@ class findRestaurant extends Component {
 		// 	})
 	};
 
-	findDiff = (arr, name) => {
-		// returns an arry of obj with date and count
-		const values = []
-		for (var i = 0; i < arr.length; i++) {
-			values.push({
-				count: arr[i][name],
-				query_date: arr[i]['query_date'],
-			})
-		}
-
-		const diff = []
-		for (var i = 0; i < values.length - 1; i++) {
-			let difference = values[i+1]['count'] - values[i]['count']
-
-			let val = difference / values[i]['count']
-			let percentChange = Mathy.roundValue(val, -5)
-
-			let query_date = values[i+1]['query_date']
-			diff.push({
-				difference: difference,
-				percentChange: percentChange,
-				query_date: query_date
-			})
-		}		
-		return diff
-	};
-
-	findDifference = (arr, name) => {
-		const values = []
-		for (var i = 0; i < arr.length; i++) {
-			values.push(arr[i][name])
-		}
-		const diff = []
-		for (var i = 0; i < values.length - 1; i++) {
-			let difference = values[i+1] - values[i]
-			diff.push(difference)
-		}
-		let mean = Mathy.getMean(diff)
-		return Mathy.roundValue(mean, -2)
-	};
-
-	findTotalStats = (arr) => {
-		var checkins = [];
-		var ratings = [];
-		var reviews = [];
-		const obj = {}
-		for (var i = 0; i < arr.length; i++) {
-			checkins.push(this.findDifference(arr[i].checkins, 'checkins'))
-			ratings.push(this.findDifference(arr[i].rating_count, 'rating_count'))
-			reviews.push(this.findDifference(arr[i].reviews, 'review_count'))
-		}
-
-		checkins = numjs.array(checkins);
-		ratings = numjs.array(ratings);
-		reviews = numjs.array(reviews);
-
-		const checkinsMean = Mathy.roundValue(checkins.mean(), -6)
-		const ratingsMean = Mathy.roundValue(ratings.mean(), -6)
-		const reviewsMean = Mathy.roundValue(reviews.mean(), -6)
-
-		obj.checkinsMean = checkinsMean
-		obj.ratingsMean = ratingsMean
-		obj.reviewsMean = reviewsMean
-
-		return obj;
-	};
-
 	loadFilter = (ev) => {
 		console.log(ev.target.value)
 
@@ -442,14 +371,14 @@ class findRestaurant extends Component {
 		API.filterSearch('price', this.state.restaurantDetails.price)
 		.then(res => {
 			const priceData = res.data
-			let priceTotal = this.findTotalStats(priceData)
+			let priceTotal = Mathy.findTotalStats(priceData)
 			getAllTotal(priceTotal, getCategoryTotal, priceData)
 			
 		})
 		.catch(err => console.log('ERROR: ',err))
 		
 		const getAllTotal = (priceTotal, getCategoryTotal, priceData) => {
-			const allTotal = this.findTotalStats(this.state.restaurantInfo)
+			const allTotal = Mathy.findTotalStats(this.state.restaurantInfo)
 			getCategoryTotal(priceTotal, allTotal, priceData)
 		}
 		
@@ -472,7 +401,7 @@ class findRestaurant extends Component {
 								console.log('no push')
 							}
 						})
-						categoryTotal = this.findTotalStats(arrFirms)
+						categoryTotal = Mathy.findTotalStats(arrFirms)
 						this.setState({
 							priceTotal: priceTotal,
 							allTotal: allTotal,
@@ -495,7 +424,9 @@ class findRestaurant extends Component {
 	showbar = () => {
 			this.setState({ showbar: !this.state.showbar });
 	};
-
+// looks for yelpId via information sent from clicking on
+// search result. sends to yelpAPI in utils to pull info
+// and send to DB
 	getYelpAddToDb = (ev) => {
 		console.log('getYelpAddToDb')
 		const id = ev.currentTarget.getAttribute('value')
@@ -556,6 +487,10 @@ class findRestaurant extends Component {
 		console.log(this.state)
 	};
 
+	findDailyDiffAvg = () => {
+		console.log(this.state)
+		Filter.dailyDiffAvg(this.state.restaurantInfo)
+	}
 	render() {
 
 		const inputProps = {
@@ -567,11 +502,12 @@ class findRestaurant extends Component {
 		<div>
 			<div className="wrapper">	
 			{/*Main section*/}
+				<button onClick={this.findDailyDiffAvg}>DailyDiffAvg</button>
 				<button onClick={this.findClosestRestaurants}>BLAHHHH</button>
 				<button onClick={this.onClick}>showsidenav true</button> 
 				<button onClick={this.showline}>showline</button> 
 				<button onClick={this.showbar}>showbar</button> 
-				<button onClick={this.findPercentChange}>finddiffall</button> 
+				<button onClick={this.findPercentChange}>findDiffall</button> 
 
 
 		      	<div className="data-section columns">
